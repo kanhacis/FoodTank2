@@ -1,0 +1,214 @@
+{% extends '../base.html' %}
+{% block content %}
+{% load static %}
+{% load sweetify %}
+{% sweetify %}
+
+
+<!-- Navbar & Hero Start -->
+<div class="container-xxl position-relative p-0">
+    <!-- Navbar include start -->
+    {% include '../navbar.html' %}
+    <!-- Navbar include end -->
+    <div class="container-xxl py-5 bg-dark">
+        <div class="container">
+
+            <div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active w-100 mx-3">
+                        <img src="{{restaurant.img1.url}}" class="w-100" alt="image">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="{{restaurant.img2.url}}" class="w-100" alt="image">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="{{restaurant.img3.url}}" class="w-100" alt="image">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="{{restaurant.img4.url}}" class="w-100" alt="image">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Navbar & Hero End -->
+
+<!-- Menu Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+            <h5 class="section-title ff-secondary text-center text-primary fw-normal">Food Menu</h5>
+            <h1 class="mb-5">Most Popular Items</h1>
+
+            <!-- Search bar start -->
+            <form method="get">
+                <div class="custom-search-bar">
+                    <input type="text" class="form-control rounded-pill bg-dark text-white" name="search-food-cuisine"
+                        placeholder="Search foods & cuisine...">
+                </div>
+            </form>
+
+            <div class="d-flex justify-content-center my-3">
+                <form method="get">
+                    <label for="under">Under 120</label>
+                    <input type="radio" name="price" value="120" id="under" {% if price %}{% if price == '120' %}checked{% endif %}{% endif %}>
+                    <span>&nbsp;&nbsp;</span>
+
+                    <label for="above">Under 240</label>
+                    <input type="radio" name="price" value="240" id="above" {% if price %}{% if price == '240' %}checked{% endif %}{% endif %}>
+                    <span>&nbsp;&nbsp;</span>
+
+                    <label for="reset">Reset</label>
+                    <input type="radio" name="price" value="" id="reset" {% if not price %}checked{% endif %}>
+                    <span>&nbsp;&nbsp;</span>
+
+                    <input type="submit" class="btn btn-primary btn-sm" value="apply">
+                </form>
+            </div>
+            <!-- Search bar end -->
+
+        </div>
+        <div class="tab-class text-center wow fadeInUp my-4" data-wow-delay="0.1s">
+            <ul class="nav nav-pills d-inline-flex justify-content-center border-bottom mb-5">
+                <li class="nav-item">
+                    <a class="d-flex align-items-center text-start mx-3 ms-0 pb-3 active" data-bs-toggle="pill"
+                        href="#tab-1">
+                        <i class="bi bi-menu-button-wide-fill fa-2x text-primary"></i>
+                        <div class="ps-3">
+                            <small class="text-body">All Menu</small>
+                            <h6 class="mt-n1 mb-0">Foods</h6>
+                        </div>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="d-flex align-items-center text-start mx-3 pb-3" data-bs-toggle="pill" href="#tab-2">
+                        <i class="fa fa-hamburger fa-2x text-primary"></i>
+                        <div class="ps-3">
+                            <small class="text-body">Special</small>
+                            <h6 class="mt-n1 mb-0">Paneer</h6>
+                        </div>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="d-flex align-items-center text-start mx-3 me-0 pb-3" data-bs-toggle="pill" href="#tab-3">
+                        <i class="fa fa-utensils fa-2x text-primary"></i>
+                        <div class="ps-3">
+                            <small class="text-body">Lovely</small>
+                            <h6 class="mt-n1 mb-0">Dinner</h6>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div id="tab-1" class="tab-pane fade show p-0 active">
+                    <div class="row g-4">
+                        {% for menu in restIdMenus %}
+                            {% if menu.available %}
+                                <div class="col-lg-6">
+                                    <div class="d-flex align-items-center inBag">
+                                        <img class="flex-shrink-0 img-fluid rounded" src="{{menu.img1.url}}" alt=""
+                                            style="width: 80px; height: 80px;">
+                                        <div class="w-100 d-flex flex-column text-start ps-4">
+                                            <h5 class="d-flex justify-content-between border-bottom pb-2">
+                                                <span>{{menu.name}}</span>
+                                                <span class="text-primary">₹{{menu.price}}</span>
+                                            </h5>
+                                            <div class="d-flex justify-content-between border-bottom pb-2">
+                                                <small class="fst-italic">{{menu.description}}</small>&nbsp;&nbsp;
+                                                <span class="text-primary"><a class="btn btn-primary addToBag"
+                                                        href="/bag/add-to-bag/{{menu.id}}"
+                                                        data-menu-id="{{menu.id}}">Add</a></span>
+                                            </div>
+                                            <a href="/bag/view_bag/" class="fst-italic text-primary addText"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                <div id="tab-2" class="tab-pane fade show p-0">
+                    <div class="row g-4">
+                        {% for menu in restIdMenus %}
+                            {% if menu.type == "Paneer" %}
+                                {% if menu.available %}
+                                    <div class="col-lg-6">
+                                        <div class="d-flex align-items-center inBag">
+                                            <img class="flex-shrink-0 img-fluid rounded" src="{{menu.img1.url}}" alt=""
+                                                style="width: 80px; height: 80px;">
+                                            <div class="w-100 d-flex flex-column text-start ps-4">
+                                                <h5 class="d-flex justify-content-between border-bottom pb-2">
+                                                    <span>{{menu.name}}</span>
+                                                    <span class="text-primary">₹{{menu.price}}</span>
+                                                </h5>
+                                                <div class="d-flex justify-content-between border-bottom pb-2">
+                                                    <small class="fst-italic">{{menu.description}}</small>&nbsp;&nbsp;
+                                                    <span class="text-primary"><a class="btn btn-primary addToBag"
+                                                            href="/bag/add-to-bag/{{menu.id}}"
+                                                            data-menu-id="{{menu.id}}">Add</a></span>
+                                                </div>
+                                                <p class="fst-italic text-danger addText"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                <div id="tab-3" class="tab-pane fade show p-0">
+                    <div class="row g-4">
+                        {% for menu in restIdMenus %}
+                            {% if menu.type == "Dinner" %}
+                                {% if menu.available %}
+                                    <div class="col-lg-6">
+                                        <div class="d-flex align-items-center inBag">
+                                            <img class="flex-shrink-0 img-fluid rounded" src="{{menu.img1.url}}" alt=""
+                                                style="width: 80px; height: 80px;">
+                                            <div class="w-100 d-flex flex-column text-start ps-4">
+                                                <h5 class="d-flex justify-content-between border-bottom pb-2">
+                                                    <span>{{menu.name}}</span>
+                                                    <span class="text-primary">₹{{menu.price}}</span>
+                                                </h5>
+                                                <div class="d-flex justify-content-between border-bottom pb-2">
+                                                    <small class="fst-italic">{{menu.description}}</small>&nbsp;&nbsp;
+                                                    <span class="text-primary"><a class="btn btn-primary addToBag"
+                                                            href="/bag/add-to-bag/{{menu.id}}"
+                                                            data-menu-id="{{menu.id}}">Add</a></span>
+                                                </div>
+                                                <p class="fst-italic text-danger addText"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="circle-container">
+            <div class="circle" id="circle">
+                <h5 id="itemCount">0</h5>
+            </div>
+        </div>
+    
+        <div class="list-container hidden" id="listContainer">
+            <div class="list-item"></div>
+        </div>
+    </div>
+</div>
+<!-- Menu End -->
+
+<!-- Code start for add to bag -->
+    <!-- Code written in ajax.js -->
+<!-- Code end for add to bag -->
+
+
+<!-- Code start for listing current added item -->
+    <!-- Code written in ajax.js -->
+<!-- Code end for listing current added item -->
+
+{% endblock content %}

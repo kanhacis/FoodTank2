@@ -1,0 +1,78 @@
+{% extends '../base.html' %}
+{% block content %}
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<!-- Navbar Start -->
+<div class="container-xxl position-relative p-0">
+    <!-- Navbar include start -->
+        {% include '../navbar.html' %}
+    <!-- Navbar include end -->
+
+    <div class="container-xxl py-5 bg-dark hero-header mb-5">
+        <div class="container text-center my-5 pt-5 pb-4">
+            <h1 class="display-3 text-white mb-3 animated slideInDown">Dashboard</h1>
+            <p class="text-white mb-3 animated slideInDown">Welcome {{request.user}}</p>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb justify-content-center text-uppercase">
+                    <li class="breadcrumb-item"><a href="/foodprovider/addRestaurant/">Add Restaurant</a></li>
+                    <li class="breadcrumb-item"><a href="/foodprovider/addMenu/">Add Menu</a></li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+<!-- Navbar End -->
+
+<!-- Restaurant data start -->
+<div class="container">
+    <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Restaurant Name</th>
+            <th scope="col">Restaurant City</th>
+            <th scope="col">Restaurant Type</th>
+            <th scope="col">Total Chefs</th>
+            <th scope="col">All Restaurants Actions</th>
+          </tr>
+        </thead>
+        
+        {% for restaurant in my_restaurant %}
+          {% if restaurant.is_verified == True %}
+          <tbody>
+              <tr>
+                <th scope="row">{{forloop.counter}}</th>
+                <td>{{restaurant.name}}</td>
+                <td>{{restaurant.city}}</td>
+                <td>{{restaurant.veg_or_nonveg}}</td>
+                <td>{{restaurant.no_of_chefs}}</td>
+                <td>
+                  <a href="/foodprovider/editRestaurant/{{restaurant.id}}" class="btn btn-primary">Edit</a>
+                  <a href="/foodprovider/deleteRestaurant/{{restaurant.id}}" class="btn btn-danger" 
+                      onclick="return confirm('Are you sure? You are deleting your added restaurant')">Delete</a>
+                  <a href="/foodprovider/addMenu/" class="btn btn-success">Add Menu</a>
+                  <a href="/foodprovider/viewMenu/{{restaurant.id}}" class="btn btn-info">View Menu</a>
+                </td>
+              </tr>
+            </tbody>
+
+          {% else %}
+            <div class="alert alert-info myAlert" role="alert">
+              {{restaurant.name}} is not verified yet.
+            </div>
+          {% endif %}
+        {% endfor %}
+
+    </table>
+</div>
+<!-- Restaurant data end -->
+
+<script>
+  $(document).ready(function(){
+    $(".myAlert").click(function(){
+      $(this).hide();
+    });
+  });
+</script>
+
+{% endblock content %}

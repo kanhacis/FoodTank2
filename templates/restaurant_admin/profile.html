@@ -1,0 +1,325 @@
+{% extends '../base2.html' %}
+{% block content %}
+
+<style>
+    .picture-container{
+    position: relative;
+    cursor: pointer;
+    text-align: center;
+}
+.picture{
+    width: 106px;
+    height: 106px;
+    background-color: #999999;
+    border: 4px solid #CCCCCC;
+    color: #FFFFFF;
+    border-radius: 50%;
+    margin: 0px auto;
+    overflow: hidden;
+    transition: all 0.2s;
+    -webkit-transition: all 0.2s;
+}
+.picture:hover{
+    border-color: #2ca8ff;
+}
+.content.ct-wizard-green .picture:hover{
+    border-color: #05ae0e;
+}
+.content.ct-wizard-blue .picture:hover{
+    border-color: #3472f7;
+}
+.content.ct-wizard-orange .picture:hover{
+    border-color: #ff9500;
+}
+.content.ct-wizard-red .picture:hover{
+    border-color: #ff3b30;
+}
+.picture input[type="file"] {
+    cursor: pointer;
+    display: block;
+    height: 100%;
+    left: 0;
+    opacity: 0 !important;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+.picture-src{
+    width: 100%;
+    
+}
+/*Profile Pic End*/
+</style>
+
+<div class="container-fluid position-relative d-flex p-0">
+    <!-- Spinner Start -->
+    <div id="spinner"
+        class="show bg-dark position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- Spinner End -->
+
+    <!-- Sidebar Start -->
+    {% include './sidebar.html' %}
+    <!-- Sidebar End -->
+
+    <!-- Content Start -->
+    <div class="content">
+        <!-- Navbar Start -->
+        {% include './navbar.html' %}
+        <!-- Navbar End -->
+
+        <!-- Profile start -->
+        <div class="container-fluid pt-4 px-4">
+            <div class="row bg-secondary rounded align-items-center mx-0">
+                <div class="bg-secondary rounded h-100 pt-3 mb-3 d-flex justify-content-center">
+                    <div class="container">
+                        <div class="picture-container">
+                            <div class="picture">
+                                <img {% if request.user.profile %} src="{{user.profile.url}}" {% else %} src="" {% endif %} class="picture-src" id="wizardPicturePreview" title="">
+                                <input type="file" id="wizard-picture" name="img">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="container-fluid pt-4 px-4">
+            <div class="row bg-secondary rounded align-items-center justify-content-center mx-0">
+                <div class="bg-secondary rounded h-100 p-4">
+                    <form action="/profile/" method="POST">
+                        {% csrf_token %}
+                    <h3 class="mb-4">Personal Information</h3>
+
+                    <!-- First & Last name start -->
+                    <div class="row">
+                        <div class="form-floating mb-3 col-md-6">
+                            <input type="text" class="form-control" name="fname" id="fname" value="{{user_profile.first_name}}" placeholder="firstname">
+                            <label for="firstname" class="mx-2">First Name</label>
+                        </div>
+
+                        <div class="form-floating mb-3 col-md-6">
+                            <input type="text" class="form-control" name="lname" id="lname" value="{{user_profile.last_name}}" placeholder="lastname">
+                            <label for="lastname" class="mx-2">Last Name</label>
+                        </div>
+                    </div>
+
+                    <!-- Email & Category -->
+                    <div class="row">
+                        <div class="form-floating mb-3 col-md-6">
+                            <input type="email" class="form-control" name="email" id="email"  value="{{user_profile.email}}" placeholder="Email">
+                            <label for="email" class="mx-2">Email</label>
+                        </div>
+
+                        <div class="form-floating mb-3 col-md-6">
+                            <select class="form-select" id="category" name="category"
+                                aria-label="Floating label select example" required>
+                                <option value="{{user_address.category}}">{{user_address.category}}</option>
+                                <option value="Home">Home</option>
+                                <option value="Work">Work</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- State & City & Area & Zipcode start -->
+                    <div class="row">
+                        <div class="form-floating mb-3 col-md-3">
+                            <input type="text" class="form-control" name="state" id="state" value="{{user_address.state}}" placeholder="State">
+                            <label for="state" class="mx-2">State</label>
+                        </div>
+
+                        <div class="form-floating mb-3 col-md-3">
+                            <input type="text" class="form-control" name="city" id="city" value="{{user_address.city}}" placeholder="City">
+                            <label for="city" class="mx-2">City</label>
+                        </div>
+
+                        <div class="form-floating mb-3 col-md-3">
+                            <input type="text" class="form-control" name="area" id="area" value="{{user_address.area}}" placeholder="area">
+                            <label for="area" class="mx-2">Area</label>
+                        </div>
+
+                        <div class="form-floating mb-3 col-md-3">
+                            <input type="number" class="form-control" name="zipcode" id="zipcode" value="{{user_address.zipcode}}" placeholder="Zip Code">
+                            <label for="zip" class="mx-2">Zip Code</label>
+                        </div>
+                        
+                    </div>
+                    <!-- State & City & Area & Zipcode end -->
+
+                    <!-- Mobile & house no start -->
+                    <div class="row">
+                        <div class="form-floating mb-3 col-md-6">
+                            <input type="number" class="form-control" name="house" id="house" value="{{user_address.house_no}}" placeholder="Mobile">
+                            <label for="house" class="mx-2">House no</label>
+                        </div>
+                        
+                        <div class="form-floating mb-3 col-md-6">
+                            <input type="number" class="form-control" name="mobile" id="mobile" value="{{user_profile.mobile}}" placeholder="Mobile">
+                            <label for="mobile" class="mx-2">Mobile</label>
+                        </div>
+                    </div>
+                    <!-- Mobile & house no end -->
+
+                    <!-- <div class="row">
+                        <div class="form-floating mb-3 col-md-12">
+                            <input type="file" class="form-control bg-dark" name="picture" id="picture" required>
+                        </div>
+                    </div> -->
+
+                    <button type="submit" class="btn btn-primary" id="updateProfile">Update Information</button>
+                </div>
+            </div>
+        </div>
+        <!-- Profile end -->
+
+        <!-- Restaurant information start -->
+        <div class="container-fluid pt-4 px-4">
+            <div class="row bg-secondary rounded align-items-center justify-content-center mx-0">
+                <div class="bg-secondary rounded h-100 pt-4">
+                    <h3 class="mb-4 mx-4">My Restaurants Informations</h3> 
+
+                    <div class="col-sm-12 col-xl-12">
+                        <div class="bg-secondary rounded h-100 p-4">
+                            <table class="table bg-dark">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Id</th>
+                                        <th scope="col">Restaurant Name</th>
+                                        <th scope="col">Restaurant City</th>
+                                        <th scope="col">Mobile</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for data in resturant_data %}
+                                        {% if data.is_verified == True %}
+                                            <tr>
+                                                <th scope="row">{{forloop.counter}}</th>
+                                                <td>{{data.name}}</td>
+                                                <td>{{data.city}}</td>
+                                                <td>{{data.mobile}}</td>
+                                                <td>Verified</td>
+                                                <td>
+                                                    <button type="submit" class="btn btn-primary"><a href="/foodprovider/editRestaurant/{{data.id}}" class="text-white">Update</a></button>
+                                                    <button type="submit" class="btn btn-primary"><a href="/foodprovider/deleteRestaurant/{{data.id}}" class="text-white" onclick="return confirm('Are you sure? You are deleting your added restaurant')" id="deleteRestaurant">Delete</a></button>
+                                                    <button type="submit" class="btn btn-primary"><a href="/menu/addMenu/" class="text-white">Add menu</a></button>
+                                                    <button type="submit" class="btn btn-primary"><a href="/menu/viewMenu/{{data.id}}" class="text-white">View menu</a></button>
+                                                </td>
+                                            </tr>
+
+                                        {% else %}
+                                            <tr>
+                                                <th scope="row">{{forloop.counter}}</th>
+                                                <td><del>{{data.name}}</del></td>
+                                                <td><del>{{data.city}}</del></td>
+                                                <td><del>{{data.mobile}}</del></td>
+                                                <td>Not Verified</td>
+                                                <td>
+                                                    <button type="submit" class="btn btn-primary"><a href="/foodprovider/editRestaurant/{{data.id}}" class="text-white">Update</a></button>
+                                                    <button type="submit" class="btn btn-primary"><a href="/foodprovider/deleteRestaurant/{{data.id}}" class="text-white" data-rest-id="{{data.id}}" onclick="return confirm('Are you sure? You are deleting your added restaurant')">Delete</a></button>
+                                                    <button type="submit" class="btn btn-primary" disabled><a href="/menu/addMenu/" class="text-white">Add menu</a></button>
+                                                    <button type="submit" class="btn btn-primary" disabled><a href="/menu/viewMenu/{{data.id}}" class="text-white">View menu</a></button>
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Restaurant information end -->
+    </div>
+    <!-- Content End -->
+</div>
+
+<script>
+    $(function () {
+        $('.nav-item').ready(function () {
+            $('#profile').addClass('active');
+        });
+    });
+
+    $(function () {
+        $('.messages').ready(function () {
+            $('#message').show();
+
+            setTimeout(function () {
+                $('#message').hide(500);
+            }, 3000);
+        });
+    });
+
+</script>
+
+<script>
+    $("#deleteRestaurant").click(function (event) { 
+        event.preventDefault();
+        console.log("clicked");
+
+        let id = $(this).attr("data-rest-id")
+        console.log(id);
+        console.log("hello");
+        let myData = {id:id}
+
+        $.ajax({
+            // url: "/profile/" + id,
+            data:myData,
+            success:function(data){
+                if(data.status){
+                    Swap.fire({icon:"success", text:"Restaurant deleted!"})
+                }
+            }
+        })
+     })
+</script>
+
+<script>
+$(document).ready(function () {
+    // Prepare the preview for the profile picture
+    $("#wizard-picture").change(function () {
+        readURL(this);
+    });
+});
+
+function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            $('#wizardPicturePreview').attr('src', e.target.result).fadeIn('slow');
+        };
+
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+$("#wizard-picture").change(function (event) {
+    event.preventDefault();
+    
+    let formData = new FormData();
+    formData.append('csrfmiddlewaretoken', $('input[name=csrfmiddlewaretoken]').val());
+    formData.append('image', $('#wizard-picture')[0].files[0]);
+
+    $.ajax({
+        url: "/profile/",
+        type: "POST",  
+        processData: false,
+        contentType: false,
+        data: formData,
+        success: function (data) {
+            console.log("ok");
+        }
+    });
+
+});
+</script>
+
+{% endblock content %}

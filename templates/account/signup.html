@@ -1,0 +1,122 @@
+{% extends '../base.html' %}
+{% block content %}
+{% load static %}
+
+{% load sweetify %}
+{% sweetify %}
+
+<!-- Navbar & Hero Start -->
+<div class="container-xxl position-relative p-0">
+    <!-- Navbar include start -->
+        {% include 'navbar.html' %}
+    <!-- Navbar include end -->
+
+    <div class="container-xxl py-5 bg-dark hero-header mb-5">
+        <div class="container text-center my-5 pt-5 pb-4">
+            <h1 class="display-3 text-white mb-3 animated slideInDown">Signup</h1>
+        </div>
+    </div>
+</div>
+<!-- Navbar & Hero End -->
+
+<!-- Signup Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+            <h5 class="section-title ff-secondary text-center text-primary fw-normal">Signup</h5>
+            <h1 class="mb-5">Register your account.</h1>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6 wow fadeIn" data-wow-delay="0.1s">
+                <iframe class="position-relative rounded w-100 h-100"
+                    src="https://t4.ftcdn.net/jpg/03/32/79/91/360_F_332799148_55PKYZ6OkLWfuQTTZ0jeD8gzNnweZ0mU.jpg"
+                    frameborder="0" style="min-height: 350px; border:0;" allowfullscreen="" aria-hidden="false"
+                    tabindex="0"></iframe>
+            </div>
+            <div class="col-md-6">
+                <div class="wow fadeInUp" data-wow-delay="0.2s">
+                    <!-- Signup form start -->
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            <!-- Username start -->
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" name="name" id="uname"
+                                        placeholder="Your Name">
+                                    <label for="uname">Username</label>
+                                </div>
+                            </div>
+                            <!-- Username end -->
+
+                            <!-- Email start -->
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="email" class="form-control" name="email" id="email"
+                                        placeholder="Your Email">
+                                    <label for="email">Your Email</label>
+                                </div>
+                            </div>
+                            <!-- Email end -->
+
+                            <!-- Mobile no start -->
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="number" class="form-control" name="mobile" id="mobile"
+                                        placeholder="Your mobile no.">
+                                    <label for="mobile">Your Mobile</label>
+                                </div>
+                            </div>
+                            <!-- Mobile no end -->
+
+                            <!-- User type start -->
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <select name="utype" id="utype" class="form-control bg-white">
+                                        <option value="">User Type</option>
+                                        <option value="Customer">Customer</option>
+                                        <option value="Foodprovider">Foodprovider</option>
+                                        <option value="Delivery">Driver</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- User type end -->
+
+                            <!-- Password start -->
+                            <div class="col-12">
+                                <div class="form-floating">
+                                    <input type="password" class="form-control" name="pwd" id="pwd"
+                                        placeholder="Your Password">
+                                    <label for="pwd">Password</label>
+                                </div>
+                            </div>
+                            <!-- Password end -->
+
+                            <!-- Password confirm start -->
+                            <div class="col-12">
+                                <div class="form-floating">
+                                    <input type="password" class="form-control" name="pwdc" id="pwdc"
+                                        placeholder="Your Password (confirm)">
+                                    <label for="pwdc">Password (confirm)</label>
+                                </div>
+                            </div>
+                            <!-- Password confirm end -->
+
+                            <p>Already have an account? <a href="/login/">login</a></p>
+
+                            <!-- Signup button start -->
+                            <div class="col-12">
+                                <button class="btn btn-primary w-100 py-3" type="submit" id="signup">Signup</button>
+                            </div>
+                            <!-- Signup button end -->
+                        </div>
+                    </form>
+                    <!-- Signup form end -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Signup End -->
+
+{% endblock content %}
