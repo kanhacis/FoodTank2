@@ -298,12 +298,13 @@ $(".deleteFood").click(function (event) {
 
           // Update itemCount in localStorage
           let itemCount = parseInt(localStorage.getItem('itemCount'), 10) || 0;
-          if (itemCount > 0) {
-            localStorage.setItem('itemCount', String(itemCount - 1));
-          }
 
+          if (itemCount > 0) {
+            localStorage.setItem('itemCount', String(itemCount));
+          }
+          
           // Update the counter of navbar
-          $("#counter").text(itemCount-=1);
+          $("#counter").text(itemCount);
 
           // Remove selected food name from localStorage
           let selectedFoodName = data.deletedFoodName; // Assuming it's retrieved from the server response
