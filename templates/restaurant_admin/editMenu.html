@@ -40,7 +40,7 @@
 
         <!-- Form Start -->
         <div class="container-fluid pt-4 px-4">
-            <div class="row bg-secondary rounded align-items-center justify-content-center mx-0">
+            <div class="row bg-secondary rounded mx-0">
                 <div class="container-fluid pt-4 px-4">
                     <form method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
@@ -104,7 +104,7 @@
                                     <!-- Menu image start -->
                                     <div class="mb-3">
                                         <label for="img1" class="form-label">Image 1</label>
-                                        <input type="file" class="form-control bg-dark" name="mimg1" id="img1" required>
+                                        <input type="file" class="form-control bg-dark" name="mimg1" id="mimg1" required>
                                     </div>
                                     <!-- Menu image end -->
 
@@ -119,28 +119,18 @@
                                     <!-- Restaurant description start -->
                                     <div class="form-floating">
                                         <textarea class="form-control" placeholder="Leave a comment here" name="mdesc"
-                                            id="desc" style="height: 150px;"
+                                            id="mdesc" style="height: 150px;"
                                             required>{{menuItems.description}}</textarea>
                                         <label for="desc">Description</label>
                                     </div>
                                     <!-- Restaurant description start -->
-
-                                    <!-- Messages Start -->
-                                    {% if messages %}
-                                    <ul class="messages list-unstyled mt-2">
-                                        {% for message in messages %}
-                                        <li{% if message.tags %} class="{{ message.tags }} text-success" {% endif %}>{{ message }}</li>
-                                        {% endfor %}
-                                    </ul>
-                                    {% endif %}
-                                    <!-- Messages End -->
                                 </div>
                             </div>
                         </div>
                         
                         <!-- Add menu button start -->
                         <div style="padding-left: 23px;">
-                            <button type="submit" class="btn btn-primary py-3 mb-4">Add menu</button>
+                            <button type="submit" class="btn btn-primary py-3 mb-4" id="addMenu" menuId="{{menuItems.id}}">Upmenu</button>
                         </div>
                         <!-- Add menu button end -->
                     </form>
@@ -148,7 +138,6 @@
             </div>
         </div>
         <!-- Form End -->
-
     </div>
     <!-- Content End -->
 </div>

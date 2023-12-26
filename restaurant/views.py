@@ -144,10 +144,10 @@ def addRestaurant(request):
 
         user_obj = User.objects.get(username=uname)
 
-        restaurant = Restaurant.objects.create(user=user_obj, name=rname, city=rcity, 
-                                address=raddress, mobile=rmobile, veg_or_nonveg=rtype, no_of_chefs=nchefs,
-                                start_date=rdate, img1=rimg1, img2=rimg2, img3=rimg3, img4=rimg4, desc=desc)
-        restaurant.save()
+        # restaurant = Restaurant.objects.create(user=user_obj, name=rname, city=rcity, 
+        #                         address=raddress, mobile=rmobile, veg_or_nonveg=rtype, no_of_chefs=nchefs,
+        #                         start_date=rdate, img1=rimg1, img2=rimg2, img3=rimg3, img4=rimg4, desc=desc)
+        # restaurant.save()
         return JsonResponse({"status":"restaurantAdded"})
         
 
@@ -193,7 +193,7 @@ def editRestaurant(request, id):
         restaurant.desc = desc
 
         restaurant.save()
-        message = messages.success(request, 'Restaurant updated successfully!')
+        return JsonResponse({"status":"editRestaurant"})
 
     context = {
         'restaurant' : restaurant

@@ -53,7 +53,7 @@
                                     <div class="row">
                                         <div class="form-floating mb-3 col-xl-6">
                                             <input type="text" class="form-control" name="uname" id="username"
-                                                value="{{restaurant.user}}" placeholder="admin" required>
+                                                value="{{restaurant.user}} edit" restaurantId="{{restaurant.id}}" placeholder="admin" required>
                                             <label for="username" class="mx-2">Admin</label>
                                         </div>
 
@@ -68,7 +68,7 @@
                                     <!-- Restaurant city & mobile start -->
                                     <div class="row">
                                         <div class="form-floating mb-3 col-xl-6">
-                                            <input type="text" class="form-control" name="rcity" id="city"
+                                            <input type="text" class="form-control" name="rcity" id="rcity"
                                                 value="{{restaurant.city}}" placeholder="Restaurant city" required>
                                             <label for="city" class="mx-2">Restaurant city</label>
                                         </div>
@@ -84,7 +84,7 @@
                                     <!-- Restaurant address & chefs start -->
                                     <div class="row">
                                         <div class="form-floating mb-3 col-xl-6">
-                                            <input type="text" class="form-control" name="raddress" id="address"
+                                            <input type="text" class="form-control" name="raddress" id="raddress"
                                                 value="{{restaurant.address}}" placeholder="Restaurant address" required>
                                             <label for="address" class="mx-2">Restaurant address</label>
                                         </div>
@@ -134,25 +134,25 @@
                                     <!-- Imgage 1 -->
                                     <div class="mb-3">
                                         <label for="img1" class="form-label">Image 1</label>
-                                        <input type="file" class="form-control bg-dark" name="rimg1" id="img1" required>
+                                        <input type="file" class="form-control bg-dark" name="rimg1" id="rimg1" required>
                                     </div>
 
                                     <!-- Image 2 -->
                                     <div class="mb-3">
                                         <label for="img2" class="form-label">Image 2</label>
-                                        <input type="file" class="form-control bg-dark" name="rimg2" id="img2" required>
+                                        <input type="file" class="form-control bg-dark" name="rimg2" id="rimg2" required>
                                     </div>
 
                                     <!-- Image 3 -->
                                     <div class="mb-3">
                                         <label for="img3" class="form-label">Image 3</label>
-                                        <input type="file" class="form-control bg-dark" name="rimg3" id="img3" required>
+                                        <input type="file" class="form-control bg-dark" name="rimg3" id="rimg3" required>
                                     </div>
 
                                     <!-- Image 4 -->
                                     <div class="mb-3">
                                         <label for="img4" class="form-label">Image 4</label>
-                                        <input type="file" class="form-control bg-dark" name="rimg4" id="img4" required>
+                                        <input type="file" class="form-control bg-dark" name="rimg4" id="rimg4" required>
                                     </div>
 
                                     <!-- Messages Start -->
@@ -171,7 +171,7 @@
                         </div>
 
                         <div style="padding-left: 23px;">
-                            <button type="submit" class="btn btn-primary py-3 mb-4">Update restaurant</button>
+                            <button type="submit" class="btn btn-primary py-3 mb-4" id="addRestaurant">Update restaurant</button>
                         </div>
                     </form>
                 </div>

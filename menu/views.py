@@ -30,8 +30,7 @@ def addMenu(request):
                 menu = Menu.objects.create(restaurant=i, name=mname, 
                                         type=mtype, price=mprice, cuisine=mcuisine, img1=mimg1, description=mdesc)
                 menu.save()
-                message = messages.success(request, 'Menu added successfully!')
-                break
+                return JsonResponse({"status":"menuAdded"})
 
     context = {
         'restaurantName' : restaurantName
@@ -72,12 +71,12 @@ def editMenu(request, id):
         mprice = request.POST.get('mprice')
         mcuisine = request.POST.get('mcuisine')
         mimg1 = request.FILES.get('mimg1')
-        status = request.POST.get('menuStatus')
+        status = request.POST.get('mstatus')
         mdesc = request.POST.get('mdesc')
 
-        if status:
+        if status == "on":
             status = True
-        else:
+        else :
             status = False
 
         menuItem.name = mname
@@ -89,7 +88,7 @@ def editMenu(request, id):
         menuItem.description = mdesc
 
         menuItem.save()
-        message = messages.success(request, 'Menu updated successfully!')
+        return JsonResponse({"status":"updateMenu"})
     
     context = {
         'menuItems' : menuItem

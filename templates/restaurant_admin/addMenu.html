@@ -104,30 +104,20 @@
                                     <!-- Menu image start -->
                                     <div class="mb-3">
                                         <label for="img1" class="form-label">Image 1</label>
-                                        <input type="file" class="form-control bg-dark" name="mimg1" id="img1" required>
+                                        <input type="file" class="form-control bg-dark" name="mimg1" id="mimg1" required>
                                     </div>
                                     <!-- Menu image end -->
 
                                     <!-- Menu description start -->
                                     <div class="form-floating">
                                         <textarea class="form-control" placeholder="Leave a comment here" name="mdesc"
-                                            id="desc" style="height: 150px;" required></textarea>
-                                        <label for="desc">Description</label>
+                                            id="mdesc" style="height: 150px;" required></textarea>
+                                        <label for="mdesc">Description</label>
                                     </div>
                                     <!-- Menu description end -->
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Messages Start -->
-                        {% if messages %}
-                            <ul class="messages list-unstyled">
-                                {% for message in messages %}
-                                    <li{% if message.tags %} class="{{ message.tags }} text-success" {% endif %}>{{ message }}</li>
-                                {% endfor %}
-                            </ul>
-                        {% endif %}
-                        <!-- Messages End -->
 
                         <!-- Add menu button start -->
                         <div style="padding-left: 23px;">
@@ -144,4 +134,6 @@
     <!-- Content End -->
 </div>
 
+
+<!-- AddMenu code written in ajax.js file -->
 {% endblock content %}

@@ -187,49 +187,5 @@
     })
 </script>
 
-<script>
-    // Code start for restaurant add
-$("#addRestaurant").click(function (event) { 
-    event.preventDefault();
-
-    let uname = $("#username").val();
-    let rname = $("#rname").val();
-    let rcity = $("#rcity").val();
-    let rmobile = $("#rmobile").val();
-    let raddress = $("#raddress").val();
-    let nchefs = $("#nchefs").val();
-    let rtype = $("#rtype").val();
-    let rdate = $("#rdate").val();
-    let desc = $("#desc").val();
-    let rimg1 = $("#rimg1").val();
-    let rimg2 = $("#rimg2").val();
-    let rimg3 = $("#rimg3").val();
-    let rimg4 = $("#rimg4").val();
-    let csr = $("input[name=csrfmiddlewaretoken]").val();
-
-    let myData = {uname:uname, rname:rname, rcity:rcity, rmobile:rmobile, raddress:raddress,
-                                nchefs:nchefs, rtype:rtype, rdate:rdate, desc:desc, rimg1:rimg1,
-                                rimg2:rimg2, rimg3:rimg3, rimg4:rimg4, csrfmiddlewaretoken: csr}
-
-    if((!rname) && (!rname) && (!rcity) && (!rmobile) && (!raddress) && (!nchefs)){
-        Swal.fire({icon:"warning", text:"All fields are required!"});
-    }
-    else if((!rimg1) && (!rimg2) && (!rimg3) && (!rimg4)){
-        Swal.fire({icon:"warning", text:"All fields are required!"});
-    }
-    else{
-        $.ajax({
-            url: "/foodprovider/addRestaurant/",
-            method: "POST", 
-            data: myData, 
-            success:function (data) { 
-                if(data.status){
-                    Swal.fire({icon:"success", text:"Restaurant created successfuly!"});
-                }
-             }
-        })
-    }
- })
-// Code end for restaurant add
-</script>
+<!-- Add to restaurant code written in ajax.js file -->
 {% endblock content %}

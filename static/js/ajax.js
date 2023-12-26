@@ -355,3 +355,150 @@ $(".itemQuantity").click(function (event) {
     });
   });
 // *************** End code to increase item quantity ****************
+
+
+
+// ************** Start code to add to restaurant and edit restaurant *******************
+$("#addRestaurant").click(function (event) { 
+    event.preventDefault();
+
+    let uname = $("#username").val();
+    let rname = $("#rname").val();
+    let rcity = $("#rcity").val();
+    let rmobile = $("#rmobile").val();
+    let raddress = $("#raddress").val();
+    let nchefs = $("#nchefs").val();
+    let rtype = $("#rtype").val();
+    let rdate = $("#rdate").val();
+    let desc = $("#desc").val();
+    let csr = $("input[name=csrfmiddlewaretoken]").val();
+
+    let id = $("#username").attr("restaurantId");
+
+    let formData = new FormData();
+    formData.append('uname', uname);
+    formData.append('rname', rname);
+    formData.append('rcity', rcity);
+    formData.append('rmobile', rmobile);
+    formData.append('raddress', raddress);
+    formData.append('nchefs', nchefs);
+    formData.append('rtype', rtype);
+    formData.append('rdate', rdate);
+    formData.append('desc', desc);
+    formData.append('csrfmiddlewaretoken', csr);
+
+    // Append file objects to FormData
+    formData.append('rimg1', $("#rimg1")[0].files[0]);
+    formData.append('rimg2', $("#rimg2")[0].files[0]);
+    formData.append('rimg3', $("#rimg3")[0].files[0]);
+    formData.append('rimg4', $("#rimg4")[0].files[0]);
+
+    if (!rname || !rcity || !rmobile || !raddress || !nchefs || !rdate) {
+        Swal.fire({icon: "warning", text: "All fields are required!"});
+    } 
+    else if (formData.get('rimg1') === 'undefined' || formData.get('rimg2') === 'undefined' || formData.get('rimg3') === 'undefined' || formData.get('rimg4') === 'undefined') {
+        Swal.fire({icon: "warning", text: "All fields are required!"});
+    } 
+    else {
+        let check = uname.split(" ");
+        if (check[1] == "edit"){
+            $.ajax({
+                url: `/foodprovider/editRestaurant/${id}`,
+                method: "POST", 
+                data: formData,
+                processData: false,  // Important: tell jQuery not to process the data
+                contentType: false,  // Important: tell jQuery not to set contentType
+                success: function (data) { 
+                    if (data.status) {
+                        Swal.fire({icon: "success", text: "Restaurant updated successfully!"});
+                    }
+                }
+            });
+        }
+        else{
+            $.ajax({
+                url: "/foodprovider/addRestaurant/",
+                method: "POST", 
+                data: formData,
+                processData: false,  // Important: tell jQuery not to process the data
+                contentType: false,  // Important: tell jQuery not to set contentType
+                success: function (data) { 
+                    if (data.status) {
+                        Swal.fire({icon: "success", text: "Restaurant created successfully!"});
+                    }
+                }
+            });
+        }
+    }
+});
+// ************** End code to add to restaurant and edit restaurant *********************
+
+
+// ************** Start code to add menu and edit menu **********************************
+$("#addMenu").click(function (event) { 
+    event.preventDefault();
+
+    let id = $(this).attr("menuId");
+    let rname = $("#rname").val();
+    let mname = $("#mname").val();
+    let mtype = $("#mtype").val();
+    let mprice = $("#mprice").val();
+    let mcuisine = $("#mcuisine").val();
+    let mstatus = $('#menuStatus:checked').val();
+    let mdesc = $("#mdesc").val();
+    let csr = $("input[name=csrfmiddlewaretoken]").val();
+
+    if (mstatus == "undefined"){
+        mstatus == ''
+    }
+
+    console.log(id, rname, mname, mcuisine, mstatus);
+
+    let formData = new FormData();
+    formData.append("rname", rname);
+    formData.append("mname", mname);
+    formData.append("mtype", mtype);
+    formData.append("mprice", mprice);
+    formData.append("mcuisine", mcuisine);
+    formData.append("mstatus", mstatus);
+    formData.append("mimg1", $("#mimg1")[0].files[0])
+    formData.append("mdesc", mdesc);
+    formData.append('csrfmiddlewaretoken', csr);
+
+    if(!rname || !mname || !mtype || !mprice || formData.get("mimg1") == "undefined"){
+        Swal.fire({ icon: "warning", text: "All fields are required!", timer:800, showCancelButton: false, showConfirmButton: false});
+    }
+    else{
+        if (id){
+            $.ajax({
+                url: `/menu/editMenu/${id}`,
+                method: "POST",
+                data: formData,
+                processData: false,  
+                contentType: false,
+                success:function(data){
+                    if(data.status){
+                        Swal.fire({ icon: "success", text: "Menu updated successfuly!", timer:800, showCancelButton: false, showConfirmButton: false});
+                    }
+                }
+            });
+            $("form")[0].reset();
+        }
+        else{
+            $.ajax({
+                url: "/menu/addMenu/",
+                method: "POST",
+                data: formData,
+                processData: false,  
+                contentType: false,
+                success:function(data){
+                    if(data.status){
+                        Swal.fire({ icon: "success", text: "Menu added successfuly!", timer:800, showCancelButton: false, showConfirmButton: false});
+                    }
+                }
+            });
+            $("form")[0].reset();
+        }
+    }
+ })
+// ************** End code to add menu and edit menu ************************************
