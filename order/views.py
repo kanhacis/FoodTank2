@@ -3,6 +3,8 @@ from bag.models import Bag, BagItem
 from .models import Order, OrderItem
 from django.http import JsonResponse
 from user.models import Address
+import stripe
+from django.conf import settings
 
 
 # Place order
@@ -43,27 +45,70 @@ def placeOrder(request):
         # Assuming the bag items are associated with the same restaurant
         restaurant = bagItems.first().item.restaurant
 
-        # Create an order associated with the restaurant
-        order = Order.objects.create(
-            user = request.user,
-            restaurant = restaurant,
-            total_bill = sum,
-            payment_method = myData[0][0].strip(),
-            deliveryAddress = deliveryAdrs
-        )    
+        if myData[0][0].strip() != "Cash on delivery":
+            url = 'http://127.0.0.1:8000/orders/'
+            stripe.api_key = settings.STRIPE_SECRET_KEY
 
-        # Create order items linked to the created order
-        for bag_item in bagItems:
-            OrderItem.objects.create(
-                order=order,
-                item=bag_item.item,
-                quantity=bag_item.quantity
-            ) 
+            orderSession = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{
+                    'price_data': {
+                        'currency': 'usd', # inr not support
+                        'product_data': {'name' : 'None'},
+                        'unit_amount': sum * 100,
+                    },
+                    'quantity': 1,
+                }],
+                mode='payment',
+                
+                success_url = url + '?session_id={CHECKOUT_SESSION_ID}',
+                cancel_url="http://127.0.0.1:8000/bag/view_bag/"
+            )
+            
+            # Create an order associated with the restaurant
+            # order = Order.objects.create(
+            #     user = request.user,
+            #     restaurant = restaurant,
+            #     total_bill = sum,
+            #     payment_method = myData[0][0].strip(),
+            #     deliveryAddress = deliveryAdrs
+            # )    
 
-        # Clear the user's bag after placing the order
-        bagItems.delete()
-        
-        # Send success response
-        return JsonResponse({"status": "success"})
+            # Create order items linked to the created order
+            # for bag_item in bagItems:
+            #     OrderItem.objects.create(
+            #         order=order,
+            #         item=bag_item.item,
+            #         quantity=bag_item.quantity
+            #     ) 
+
+            # Clear the user's bag after placing the order
+            # bagItems.delete()
+
+            # Send url to redirect to the payment page
+            return JsonResponse({'redirect': orderSession.url})
+        else:
+            # Create an order associated with the restaurant
+            order = Order.objects.create(
+                user = request.user,
+                restaurant = restaurant,
+                total_bill = sum,
+                payment_method = myData[0][0].strip(),
+                deliveryAddress = deliveryAdrs
+            )    
+
+            # Create order items linked to the created order
+            for bag_item in bagItems:
+                OrderItem.objects.create(
+                    order=order,
+                    item=bag_item.item,
+                    quantity=bag_item.quantity
+                ) 
+
+            # Clear the user's bag after placing the order
+            bagItems.delete()
+
+            # Send success response
+            return JsonResponse({"status": "success"})
 
     return redirect('/bag/view_bag/')

@@ -153,8 +153,6 @@ STORAGES = {
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-# MEDIA_URL = '/restaurant_images/'
-# MEDIA_ROOT = os.path.join(BASE_DIR, 'restaurant_images')
+STRIPE_PUBLISHABLE_KEY = "pk_test_51OUOtuSIH9yNr4T1g5FGjcAW7JFoBpKstjqSatww6gPqzXSAWhxU3LivKRbZXniQctRfJZHeTsIcWXiBbLZgauzt003N2eeS8x"
+STRIPE_SECRET_KEY = "sk_test_51OUOtuSIH9yNr4T1AnMap64qQIjxvxD8tMeJtUa14Solu8m5nYFe8ulhNVwfoApUo6vgUIYkmPTyu3Jqw62vBBT700ul71Rtcl"
 
-# settings.py
-# DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # Set to the desired size in bytes
