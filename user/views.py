@@ -7,6 +7,10 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Avg
 from order.models import Order, OrderItem
 from django.http import JsonResponse
+from django.urls import reverse
+from twilio.rest import Client
+from django.conf import settings
+from datetime import datetime
 
 
 # Rendering home page with all food items.
@@ -187,10 +191,12 @@ def signIn(request):
 
         user = authenticate(request, username=uname, password=pwd)
 
-        print(user)
         if user is not None:
             if user.user_type == "Customer":
-                login(request, user)
+                # login(request, user)
+
+                request.session["username"] = uname
+                request.session["password"] = pwd
                 return JsonResponse({"status":"signIn"})
                 
             elif user.user_type == "Foodprovider":
@@ -205,6 +211,69 @@ def signIn(request):
             return JsonResponse({'status':'invalidUser'})
 
     return render(request, 'account/login.html')
+
+# Sent Number to verify
+def verifyNumber(request):
+    if request.method == "POST":
+        phone_no = request.POST.get('phone_no')
+        return redirect(reverse('verify', kwargs={'phoneNo': phone_no}))
+    
+    return render(request, 'account/verifyNumber.html')
+
+
+
+account_sid = settings.ACCOUNT_SID
+auth_token = settings.AUTH_TOKEN
+verify_sid = settings.VERIFY_SID
+
+client = Client(account_sid, auth_token)
+
+# Verify Number
+def verify(request, phoneNo):
+    if request.method == "POST":
+        code = request.POST.get('code')
+
+        # Check otp is still valid or not
+        # Get the otp creation time from the session
+        now = datetime.now()
+        otpGetTime = now.strftime("%H:%M:%S")
+        otpCreateTime = request.session.get("otpCreationTime")
+
+        if(otpCreateTime):
+            otp_create_time = datetime.strptime(otpCreateTime, "%H:%M:%S")
+            otp_enter_time = datetime.strptime(otpGetTime, "%H:%M:%S")
+            time_difference = otp_enter_time - otp_create_time
+            seconds_difference = int(time_difference.total_seconds())
+
+            if seconds_difference < 40:
+                verification_check = client.verify.services(verify_sid).verification_checks.create(
+                    to=f"+91{phoneNo}",
+                    code=code
+                )
+
+                if verification_check.status == "approved": 
+                    user = authenticate( 
+                        request, 
+                        username=request.session.get('username'), 
+                        password=request.session.get('password') 
+                    ) 
+                    login(request, user)
+                    return redirect('index')
+                else:
+                    return redirect('/login/')
+            else:
+                return redirect('/login/') 
+
+    # Store otp creation time and store it in session
+    now = datetime.now() 
+    request.session["otpCreationTime"] = now.strftime("%H:%M:%S")
+    
+    verification = client.verify.services(verify_sid).verifications.create(
+        to=f"+91{phoneNo}",
+        channel='whatsapp'
+    )
+    return render(request, 'account/verify.html')
+
 
 # Rendering orders page & showing my order history
 @login_required(login_url='/login/')

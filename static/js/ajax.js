@@ -113,7 +113,7 @@ $(document).ready(function () {
                 data: myData,
                 success: function (data) {
                     if (data.status === "signIn") {
-                        window.location = '/';
+                        window.location = '/verifyNumber/';
                     }
 
                     else if (data.status === "invalidUser") {

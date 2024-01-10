@@ -5,13 +5,14 @@ from django.http import JsonResponse
 from user.models import Address
 import stripe
 from django.conf import settings
+import pyqrcode
 
 
 # Place order
 def placeOrder(request):
     # Get the payment method type from the user
     # Store data of [paymentMethod, city, area, zipcode, house_no]
-    myData = []
+    myData = [] 
     paymentMethod = ''
     if request.method == 'POST':
         payment = request.POST.get('payment', '')
@@ -48,7 +49,7 @@ def placeOrder(request):
         if myData[0][0].strip() != "Cash on delivery":
             url = 'http://127.0.0.1:8000/orders/'
             stripe.api_key = settings.STRIPE_SECRET_KEY
-
+           
             orderSession = stripe.checkout.Session.create(
             payment_method_types=['card'],
             line_items=[{
@@ -61,10 +62,10 @@ def placeOrder(request):
                 }],
                 mode='payment',
                 
-                success_url = url + '?session_id={CHECKOUT_SESSION_ID}',
+                success_url=url + '?session_id={CHECKOUT_SESSION_ID}',
                 cancel_url="http://127.0.0.1:8000/bag/view_bag/"
             )
-            
+
             # Create an order associated with the restaurant
             # order = Order.objects.create(
             #     user = request.user,
@@ -84,6 +85,10 @@ def placeOrder(request):
 
             # Clear the user's bag after placing the order
             # bagItems.delete()
+
+            # Generate the QR code for the payment url
+            url = pyqrcode.create(orderSession.url)
+            url.png('payQr.png', scale=4)
 
             # Send url to redirect to the payment page
             return JsonResponse({'redirect': orderSession.url})
