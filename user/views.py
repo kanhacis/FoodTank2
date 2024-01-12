@@ -193,10 +193,10 @@ def signIn(request):
 
         if user is not None:
             if user.user_type == "Customer":
-                # login(request, user)
+                login(request, user)
 
-                request.session["username"] = uname
-                request.session["password"] = pwd
+                # request.session["username"] = uname
+                # request.session["password"] = pwd
                 return JsonResponse({"status":"signIn"})
                 
             elif user.user_type == "Foodprovider":
@@ -216,17 +216,21 @@ def signIn(request):
 def verifyNumber(request):
     if request.method == "POST":
         phone_no = request.POST.get('phone_no')
+        uname = request.session.get("username")
+        user = User.objects.get(username=uname)
+        user.mobile = phone_no
+        user.save()
         return redirect(reverse('verify', kwargs={'phoneNo': phone_no}))
     
     return render(request, 'account/verifyNumber.html')
 
 
-
+# Get token's from the settings.py
 account_sid = settings.ACCOUNT_SID
 auth_token = settings.AUTH_TOKEN
 verify_sid = settings.VERIFY_SID
 
-client = Client(account_sid, auth_token)
+client = Client(account_sid, auth_token) 
 
 # Verify Number
 def verify(request, phoneNo):
@@ -258,6 +262,7 @@ def verify(request, phoneNo):
                         password=request.session.get('password') 
                     ) 
                     login(request, user)
+                    
                     return redirect('index')
                 else:
                     return redirect('/login/')
@@ -270,7 +275,7 @@ def verify(request, phoneNo):
     
     verification = client.verify.services(verify_sid).verifications.create(
         to=f"+91{phoneNo}",
-        channel='whatsapp'
+        channel='sms' 
     )
     return render(request, 'account/verify.html')
 

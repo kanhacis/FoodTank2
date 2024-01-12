@@ -153,3 +153,7 @@ STORAGES = {
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+STRIPE_PUBLISHABLE_KEY = "pk_test_51OUOtuSIH9yNr4T1g5FGjcAW7JFoBpKstjqSatww6gPqzXSAWhxU3LivKRbZXniQctRfJZHeTsIcWXiBbLZgauzt003N2eeS8x"
+STRIPE_SECRET_KEY = "sk_test_51OUOtuSIH9yNr4T1AnMap64qQIjxvxD8tMeJtUa14Solu8m5nYFe8ulhNVwfoApUo6vgUIYkmPTyu3Jqw62vBBT700ul71Rtcl"
+
+

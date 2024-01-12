@@ -8,7 +8,7 @@ USER_TYPE = (
 )
 # Abstract User Model
 class User(AbstractUser):
-    mobile = models.CharField(max_length=255, unique=True)
+    mobile = models.CharField(max_length=255, unique=False)
     user_type = models.CharField(max_length=255, choices=USER_TYPE)
     profile = models.ImageField(upload_to="profilePicture/", blank=True, null=True)
         
