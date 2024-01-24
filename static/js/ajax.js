@@ -10,10 +10,10 @@ $(document).ready(function () {
         let csr = $("input[name=csrfmiddlewaretoken]").val();
 
         if (!email) {
-            Swal.fire({ icon: 'warning', text: 'Email is required', timer:1000, showCancelButton: false, showConfirmButton: false});
+            Swal.fire({ icon: 'warning', text: 'Email is required', timer: 1000, showCancelButton: false, showConfirmButton: false });
         }
         else if (!sbj) {
-            Swal.fire({ icon: 'warning', text: 'Subject is required', timer:1000, showCancelButton: false, showConfirmButton: false});
+            Swal.fire({ icon: 'warning', text: 'Subject is required', timer: 1000, showCancelButton: false, showConfirmButton: false });
         }
         else {
             let myData = { name: name, email: email, subject: sbj, message: msg, csrfmiddlewaretoken: csr };
@@ -28,7 +28,7 @@ $(document).ready(function () {
                             icon: 'success',
                             title: 'Success',
                             text: 'Message sent successfully',
-                            timer:1000, showCancelButton: false, showConfirmButton: false
+                            timer: 1000, showCancelButton: false, showConfirmButton: false
                         })
                     }
                 }
@@ -50,42 +50,127 @@ $("#signup").click(function (event) {
     let utype = $("#utype").val();
     let pwd = $("#pwd").val();
     let pwdc = $("#pwdc").val();
+    let otp = $("#otp").val();
     let csr = $("input[name=csrfmiddlewaretoken]").val();
 
-    let myData = { uname: uname, email: email, mobile: mobile, utype: utype, pwd: pwd, pwdc: pwdc, csrfmiddlewaretoken: csr }
+    let myData = {
+        uname: uname,
+        email: email,
+        mobile: mobile,
+        utype: utype,
+        pwd: pwd,
+        pwdc: pwdc,
+        otp: otp,
+        csrfmiddlewaretoken: csr,
+    };
 
     if (!uname || !email || !mobile || !utype || !pwd || !pwdc) {
-        Swal.fire({ icon: 'warning', text: 'All fields are required.', timer:1000, showCancelButton: false, showConfirmButton: false});
-    }
-    else if(pwd != pwdc){
-        Swal.fire({icon:"error", text:"Password and confirm password does not match", timer:1000, showCancelButton: false, showConfirmButton: false})
-    }
-    else{
+        Swal.fire({
+            icon: "warning",
+            text: "All fields are required.",
+            timer: 1000,
+            showCancelButton: false,
+            showConfirmButton: false,
+        });
+    } else if (pwd != pwdc) {
+        Swal.fire({
+            icon: "error",
+            text: "Password and confirm password does not match",
+            timer: 1000,
+            showCancelButton: false,
+            showConfirmButton: false,
+        });
+    } else {
         $.ajax({
-            url: '/signup/',
-            method: 'POST',
+            url: "/signup/",
+            method: "POST",
             data: myData,
             success: function (data) {
                 if (data.status === "createAccount") {
-                    Swal.fire({ icon: 'success', text: 'Account created successfully' })
+                    Swal.fire({
+                        icon: "success",
+                        text: "Account created successfully",
+                        timer: 1000,
+                        showCancelButton: false,
+                        showConfirmButton: false,
+                    });
+                } else if (data.status === "userExist") {
+                    Swal.fire({
+                        icon: "warning",
+                        text: "User already exist.",
+                        timer: 1000,
+                        showCancelButton: false,
+                        showConfirmButton: false,
+                    });
+                } else if (data.status === "emailExist") {
+                    Swal.fire({
+                        icon: "warning",
+                        text: "Email already exist.",
+                        timer: 1000,
+                        showCancelButton: false,
+                        showConfirmButton: false,
+                    });
+                } else if (data.status === "mobileExist") {
+                    Swal.fire({
+                        icon: "warning",
+                        text: "Contact no. already exist.",
+                        timer: 1000,
+                        showCancelButton: false,
+                        showConfirmButton: false,
+                    });
+                } else if (data.status === "passwordNotMatch") {
+                    Swal.fire({
+                        icon: "warning",
+                        text: "Password and confirm password do not match.",
+                        timer: 1000,
+                        showCancelButton: false,
+                        showConfirmButton: false,
+                    });
+                } else if (data.status === "signup") {
+                    Swal.fire({
+                        icon: "success",
+                        text: "Account created successfully!",
+                        timer: 1000,
+                        showCancelButton: false,
+                        showConfirmButton: false,
+                    });
+                } else if (data.state === "invalidOTP") {
+                    Swal.files({ icon: "warning", text: "Invalid OTP" });
+                } else if (data.status === "openOTP") {
+                    openOTPForm();
                 }
-                else if (data.status === "userExist") {
-                    Swal.fire({ icon: 'warning', text: 'User already exist.' });
-                }
-                else if (data.status === "emailExist") {
-                    Swal.fire({ icon: "warning", text: "Email already exist." })
-                }
-                else if (data.status === "mobileExist") {
-                    Swal.fire({ icon: "warning", text: "Contact no. already exist." })
-                }
-                else if (data.status === "passwordNotMatch") {
-                    Swal.fire({ icon: "warning", text: "Password and confirm password do not match." })
-                }
-            }
-        })
-        $("form")[0].reset();
+            },
+        });
     }
-})
+});
+
+$("#otpSend").click(function (event) {
+    event.preventDefault();
+
+    let otp = $("#otp").val();
+    let csr = $("input[name=csrfmiddlewaretoken]").val();
+
+    let myData = { otp: otp, csrfmiddlewaretoken: csr };
+
+    $.ajax({
+        url: "/signup/",
+        method: "POST",
+        data: myData,
+        success: function (data) {
+            if (data.status === "invalidOTP") {
+                Swal.fire({
+                    icon: "warning",
+                    text: "Invalid OTP",
+                    timer: 1000,
+                    showCancelButton: false,
+                    showConfirmButton: false,
+                });
+            } else if (data.status === "signup") {
+                window.location = "/login/";
+            }
+        },
+    });
+});
 // Code end for signup page
 
 
@@ -101,10 +186,10 @@ $(document).ready(function () {
         let myData = { uname: uname, pwd: pwd, csrfmiddlewaretoken: csr };
 
         if (!uname) {
-            Swal.fire({ icon: "warning", text: "Please enter username!", timer:1000, showCancelButton: false, showConfirmButton: false})
+            Swal.fire({ icon: "warning", text: "Please enter username!", timer: 1000, showCancelButton: false, showConfirmButton: false })
         }
         else if (!pwd) {
-            Swal.fire({ icon: "warning", text: "Please enter password!", timer:1000, showCancelButton: false, showConfirmButton: false})
+            Swal.fire({ icon: "warning", text: "Please enter password!", timer: 1000, showCancelButton: false, showConfirmButton: false })
         }
         else {
             $.ajax({
@@ -118,7 +203,7 @@ $(document).ready(function () {
                     }
 
                     else if (data.status === "invalidUser") {
-                        Swal.fire({ icon: "warning", text: "Invalid username or password. Please try again.", timer:1000, showCancelButton: false, showConfirmButton: false})
+                        Swal.fire({ icon: "warning", text: "Invalid username or password. Please try again.", timer: 1000, showCancelButton: false, showConfirmButton: false })
                     }
                 }
             });
@@ -132,43 +217,44 @@ $(document).ready(function () {
 $("#updateProfile").click(function (event) {
     event.preventDefault();
 
-    let uname = $("#uname").val();
-    let email = $("#email").val();
-    let fname = $("#fname").val();
-    let lname = $("#lname").val();
-    let mobile = $("#mobile").val();
-    let utype = $("#utype").val();
-    let state = $("#state").val();
-    let city = $("#city").val();
-    let area = $("#area").val();
-    let zipcode = $("#zipcode").val();
-    let house = $("#house").val();
-    let category = $("#category").val();
-    let picture = $('#picture').val();
-    let csr = $("input[name=csrfmiddlewaretoken]").val();
+    let uname = $("#uname").val().trim();
+    let email = $("#email").val().trim();
+    let fname = $("#fname").val().trim();
+    let lname = $("#lname").val().trim();
+    let mobile = $("#mobile").val().trim();
+    let utype = $("#utype").val().trim();
+    let state = $("#state").val().trim();
+    let city = $("#city").val().trim();
+    let area = $("#area").val().trim();
+    let zipcode = $("#zipcode").val().trim();
+    let house = $("#house").val().trim();
+    let category = $("#category").val().trim();
+    let picture = $('#picture').val().trim();
+    let csr = $("input[name=csrfmiddlewaretoken]").val().trim();
+
 
     let myData = {
         uname: uname, email: email, fname: fname, lname: lname, mobile: mobile,
-        utype: utype, primary:'True', state: state, city: city, area: area, zipcode: zipcode,
-        house: house, picture:picture, category: category, csrfmiddlewaretoken: csr
+        utype: utype, primary: 'True', state: state, city: city, area: area, zipcode: zipcode,
+        house: house, picture: picture, category: category, csrfmiddlewaretoken: csr
     }
 
     console.log(picture, "ok");
 
-    if(!city || !area || !house){
-        Swal.fire({icon:"warning", text:"You can not empty city, area, house no.", timer:1000, showCancelButton: false, showConfirmButton: false});
+    if (!city || !area || !house) {
+        Swal.fire({ icon: "warning", text: "You can not empty city, area, house no.", timer: 1000, showCancelButton: false, showConfirmButton: false });
     }
-    else{
+    else {
         $.ajax({
             url: "/profile/",
             method: "POST",
             data: myData,
             success: function (data) {
                 if (data.status) {
-                    Swal.fire({ icon: "success", text: "Profile update successfuly!", timer:1000, showCancelButton: false, showConfirmButton: false })
+                    Swal.fire({ icon: "success", text: "Profile update successfuly!", timer: 1000, showCancelButton: false, showConfirmButton: false })
                 }
                 else {
-                    Swal.fire({ icon: "error", text: "Something went wrong try again!", timer:1000, showCancelButton: false, showConfirmButton: false })
+                    Swal.fire({ icon: "error", text: "Something went wrong try again!", timer: 1000, showCancelButton: false, showConfirmButton: false })
                 }
             }
         })
@@ -189,7 +275,7 @@ function updateUI(data) {
 
     let result = '';
     let x = data.bagFoodsName;
-    for(let i = 0; i < x.length; i++){
+    for (let i = 0; i < x.length; i++) {
         result += `<div class="list-item">${x[i]}</div>`;
     }
 
@@ -209,7 +295,7 @@ $(".addToBag").click(function (event) {
         data: myData,
         success: function (data) {
             if (data.status == "itemAdded") {
-                Swal.fire({ icon: 'success', text: 'Item added!', timer: 500, showCancelButton: false, showConfirmButton: false});
+                Swal.fire({ icon: 'success', text: 'Item added!', timer: 500, showCancelButton: false, showConfirmButton: false });
 
                 // Update the item count in localStorage
                 localStorage.setItem('itemCount', data.bagItemCount);
@@ -221,14 +307,14 @@ $(".addToBag").click(function (event) {
                 updateUI(data);
             }
             else {
-                Swal.fire({ icon: 'error', text: 'Item already in the bag!', timer: 500, showCancelButton: false, showConfirmButton: false});
+                Swal.fire({ icon: 'error', text: 'Item already in the bag!', timer: 500, showCancelButton: false, showConfirmButton: false });
             }
         }
     });
 });
 
 // Check if there is stored data on page load and update the UI
-$(document).ready(function() {
+$(document).ready(function () {
     let storedCount = localStorage.getItem('itemCount');
     let storedItems = localStorage.getItem('bagFoodsName');
 
@@ -246,7 +332,7 @@ $(document).ready(function() {
 });
 
 // Clear the localStorage when user logout
-$("#userLogout").click(function () { 
+$("#userLogout").click(function () {
     localStorage.clear();
 })
 // ******************** Code end for add to bag ********************** 
@@ -268,10 +354,10 @@ $(document).ready(function () {
         listContainer.slideUp();
     });
 
-    circle.click(function () { 
+    circle.click(function () {
         // Move to the basket
         window.location = "/bag/view_bag/";
-     })
+    })
 });
 // ************* Code end for listing current added item ******************
 
@@ -287,42 +373,42 @@ $(".deleteFood").click(function (event) {
     let myData = { id: id };
 
     $.ajax({
-      url: "/bag/deleteItem/" + id,
-      data: myData,
-      success: function (data) {
-        if (data.status === "itemDeleted") { 
-          // Remove the complete row
-          $(this).closest(".deleteRow").remove();
+        url: "/bag/deleteItem/" + id,
+        data: myData,
+        success: function (data) {
+            if (data.status === "itemDeleted") {
+                // Remove the complete row
+                $(this).closest(".deleteRow").remove();
 
-          // Update the total price in the HTML
-          $(".totalPrice").text("₹" + data.finalPrice);
+                // Update the total price in the HTML
+                $(".totalPrice").text("₹" + data.finalPrice);
 
-          // Update itemCount in localStorage
-          let itemCount = parseInt(localStorage.getItem('itemCount'), 10) || 0;
+                // Update itemCount in localStorage
+                let itemCount = parseInt(localStorage.getItem('itemCount'), 10) || 0;
 
-          if (itemCount > 0) {
-            localStorage.setItem('itemCount', String(itemCount));
-          }
-          
-          // Update the counter of navbar
-          $("#counter").text(itemCount);
+                if (itemCount > 0) {
+                    localStorage.setItem('itemCount', String(itemCount));
+                }
 
-          // Remove selected food name from localStorage
-          let selectedFoodName = data.deletedFoodName; // Assuming it's retrieved from the server response
-          let storedFoods = JSON.parse(localStorage.getItem('bagFoodsName')) || [];
-          let updatedFoods = storedFoods.filter(food => food !== foodName); // Use the foodName passed in the AJAX call
-          localStorage.setItem('bagFoodsName', JSON.stringify(updatedFoods));
+                // Update the counter of navbar
+                $("#counter").text(itemCount);
 
-          // Update the UI (if needed)
-          $("#itemCount").text("items " + String(parseInt(data.totalItem, 10) - 1));
-        }
-      }.bind(this)
+                // Remove selected food name from localStorage
+                let selectedFoodName = data.deletedFoodName; // Assuming it's retrieved from the server response
+                let storedFoods = JSON.parse(localStorage.getItem('bagFoodsName')) || [];
+                let updatedFoods = storedFoods.filter(food => food !== foodName); // Use the foodName passed in the AJAX call
+                localStorage.setItem('bagFoodsName', JSON.stringify(updatedFoods));
+
+                // Update the UI (if needed)
+                $("#itemCount").text("items " + String(parseInt(data.totalItem, 10) - 1));
+            }
+        }.bind(this)
     });
-  });
+});
 
-  $("#userLogout").click(function () { 
+$("#userLogout").click(function () {
     localStorage.clear();
-   })
+})
 // ************ Code end to delete a basket item ***************
 
 
@@ -338,30 +424,30 @@ $(".itemQuantity").click(function (event) {
     console.log(id, currentQuantity);
 
     if (currentQuantity < 1) {
-      console.log("Quantity is less than 1");
-      return;
+        console.log("Quantity is less than 1");
+        return;
     }
 
     let row = quantityElement.closest('tr'); // Find the closest <tr> element (row)
     let newPriceElement = row.find('.newPrice'); // Find the corresponding .newPrice element within the row
 
     $.ajax({
-      url: "/bag/view_bag/",
-      data: { id: id, quantity: currentQuantity },
-      success: function (data) {
-        let finalP = parseInt(data.price, 10);
-        newPriceElement.text("₹" + finalP);
+        url: "/bag/view_bag/",
+        data: { id: id, quantity: currentQuantity },
+        success: function (data) {
+            let finalP = parseInt(data.price, 10);
+            newPriceElement.text("₹" + finalP);
 
-        $(".totalPrice").text("₹" + data.Final);
-      }
+            $(".totalPrice").text("₹" + data.Final);
+        }
     });
-  });
+});
 // *************** End code to increase item quantity ****************
 
 
 
 // ************** Start code to add to restaurant and edit restaurant *******************
-$("#addRestaurant").click(function (event) { 
+$("#addRestaurant").click(function (event) {
     event.preventDefault();
 
     let uname = $("#username").val();
@@ -396,37 +482,37 @@ $("#addRestaurant").click(function (event) {
     formData.append('rimg4', $("#rimg4")[0].files[0]);
 
     if (!rname || !rcity || !rmobile || !raddress || !nchefs || !rdate) {
-        Swal.fire({icon: "warning", text: "All fields are required!"});
-    } 
+        Swal.fire({ icon: "warning", text: "All fields are required!" });
+    }
     else if (formData.get('rimg1') === 'undefined' || formData.get('rimg2') === 'undefined' || formData.get('rimg3') === 'undefined' || formData.get('rimg4') === 'undefined') {
-        Swal.fire({icon: "warning", text: "All fields are required!"});
-    } 
+        Swal.fire({ icon: "warning", text: "All fields are required!" });
+    }
     else {
         let check = uname.split(" ");
-        if (check[1] == "edit"){
+        if (check[1] == "edit") {
             $.ajax({
                 url: `/foodprovider/editRestaurant/${id}`,
-                method: "POST", 
+                method: "POST",
                 data: formData,
                 processData: false,  // Important: tell jQuery not to process the data
                 contentType: false,  // Important: tell jQuery not to set contentType
-                success: function (data) { 
+                success: function (data) {
                     if (data.status) {
-                        Swal.fire({icon: "success", text: "Restaurant updated successfully!"});
+                        Swal.fire({ icon: "success", text: "Restaurant updated successfully!" });
                     }
                 }
             });
         }
-        else{
+        else {
             $.ajax({
                 url: "/foodprovider/addRestaurant/",
-                method: "POST", 
+                method: "POST",
                 data: formData,
                 processData: false,  // Important: tell jQuery not to process the data
                 contentType: false,  // Important: tell jQuery not to set contentType
-                success: function (data) { 
+                success: function (data) {
                     if (data.status) {
-                        Swal.fire({icon: "success", text: "Restaurant created successfully!"});
+                        Swal.fire({ icon: "success", text: "Restaurant created successfully!" });
                     }
                 }
             });
@@ -437,7 +523,7 @@ $("#addRestaurant").click(function (event) {
 
 
 // ************** Start code to add menu and edit menu **********************************
-$("#addMenu").click(function (event) { 
+$("#addMenu").click(function (event) {
     event.preventDefault();
 
     let id = $(this).attr("menuId");
@@ -450,7 +536,7 @@ $("#addMenu").click(function (event) {
     let mdesc = $("#mdesc").val();
     let csr = $("input[name=csrfmiddlewaretoken]").val();
 
-    if (mstatus == "undefined"){
+    if (mstatus == "undefined") {
         mstatus == ''
     }
 
@@ -467,40 +553,40 @@ $("#addMenu").click(function (event) {
     formData.append("mdesc", mdesc);
     formData.append('csrfmiddlewaretoken', csr);
 
-    if(!rname || !mname || !mtype || !mprice || formData.get("mimg1") == "undefined"){
-        Swal.fire({ icon: "warning", text: "All fields are required!", timer:800, showCancelButton: false, showConfirmButton: false});
+    if (!rname || !mname || !mtype || !mprice || formData.get("mimg1") == "undefined") {
+        Swal.fire({ icon: "warning", text: "All fields are required!", timer: 800, showCancelButton: false, showConfirmButton: false });
     }
-    else{
-        if (id){
+    else {
+        if (id) {
             $.ajax({
                 url: `/menu/editMenu/${id}`,
                 method: "POST",
                 data: formData,
-                processData: false,  
+                processData: false,
                 contentType: false,
-                success:function(data){
-                    if(data.status){
-                        Swal.fire({ icon: "success", text: "Menu updated successfuly!", timer:800, showCancelButton: false, showConfirmButton: false});
+                success: function (data) {
+                    if (data.status) {
+                        Swal.fire({ icon: "success", text: "Menu updated successfuly!", timer: 800, showCancelButton: false, showConfirmButton: false });
                     }
                 }
             });
             $("form")[0].reset();
         }
-        else{
+        else {
             $.ajax({
                 url: "/menu/addMenu/",
                 method: "POST",
                 data: formData,
-                processData: false,  
+                processData: false,
                 contentType: false,
-                success:function(data){
-                    if(data.status){
-                        Swal.fire({ icon: "success", text: "Menu added successfuly!", timer:800, showCancelButton: false, showConfirmButton: false});
+                success: function (data) {
+                    if (data.status) {
+                        Swal.fire({ icon: "success", text: "Menu added successfuly!", timer: 800, showCancelButton: false, showConfirmButton: false });
                     }
                 }
             });
             $("form")[0].reset();
         }
     }
- })
+})
 // ************** End code to add menu and edit menu ************************************

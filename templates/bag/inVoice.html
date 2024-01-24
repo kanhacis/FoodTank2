@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InVoice</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        section {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        section .parent {
+            background-color: white;
+            padding: 3rem;
+            width: 80%;
+        }
+
+        section .parent .logo {
+            margin-bottom: 2rem;
+            font-size: 18px;
+        }
+
+        section .parent .head {
+            margin-bottom: 3rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        section .parent .head .details p{
+            line-height: 1.5rem;
+        }
+
+        section .parent .head .address p{
+            line-height: 1.5rem;
+        }
+
+        /* Body part start */
+        .body {
+            width: 90%;
+            margin: 0 auto;
+            margin-bottom: 3rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+        }
+
+        th {
+            color: gray;
+            border-bottom: 2px solid gray;
+            font-size: 14px;
+        }
+
+        td {
+            color: #555;
+        }
+
+        .name {
+            color: gray;
+        }
+    </style>
+</head>
+
+<body>
+    <section>
+        <div class="parent">
+            <h1 class="logo">FoodTank</h1>
+
+            <div class="head">
+                <div class="details">
+                    <h1 style="font-size: 16px; margin-bottom: 10px; ">{{request.user.first_name}} {{request.user.last_name}}</h1>
+                    <p>Invoice Date: {% now "Y-m-d" %}</p>
+                    <p>Invoice No: 1234</p>
+                </div>
+                <div class="address" style="text-align: end;">
+                    <p>{{request.user.username}}</p>
+                    <p>{{address2.area}}</p>
+                    <p>{{address2.city}} || {{address2.zipcode}}</p>
+                    <p>{{request.user.email}}</p>
+                </div>
+            </div>
+
+            <div class="body">
+                <table style="width: 100%;">
+                    <thead>
+                        <tr>
+                            <th>ITEM</th>
+                            <th>QUANTITY</th>
+                            <th>UNIT PRICE</th>
+                            <th>TOTAL PRICE</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in bagItems %}
+                        <tr>
+                            <td>{{item.item.name}}</td>
+                            <td>{{item.quantity}}</td>
+                            <td>${{item.item.price}}</td>
+                            <td>${% widthratio item.item.price 1 item.quantity %}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="footer">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="text-align: start;">PAYMENT INFO</th>
+                            <th style="text-align: end;">TOTAL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="text-align: start;">
+                                <p>Account No: 12345</p>
+                                <p style="margin-top: 1rem;">Routing No: 12345</p>
+                            </td>
+                            <td style="text-align: end; font: 20px;">${{total}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

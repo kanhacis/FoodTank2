@@ -25,12 +25,13 @@ class Order(models.Model):
 
     total_bill = models.IntegerField(blank=True, null=True)
     payment_method = models.CharField(max_length=255, blank=True, null=True, choices=payment_choices)
-    order_date = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    order_date = models.DateTimeField(auto_now_add=True, blank=True, null=True) 
 
-    deliveryAddress = models.ForeignKey(Address, on_delete=models.CASCADE, blank=True, null=True)
+    deliveryAddress = models.ForeignKey(Address, on_delete=models.CASCADE, blank=True, null=True) 
     
-    def __str__(self):
-        return self.user.username
+    def __str__(self): 
+        return self.user.username 
+
 
 # OrderItem model
 class OrderItem(models.Model):
@@ -40,4 +41,3 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return self.item.name
-

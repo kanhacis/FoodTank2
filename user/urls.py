@@ -11,7 +11,4 @@ urlpatterns = [
     path("orderInfo/<int:id>", views.orderInfo, name="orderInfo"),
     path("logout/", views.logOut, name="logout"),
     path("contact/", views.contact, name="contact"),
-
-    path("verifyNumber/", views.verifyNumber, name="verifyNumber"),
-    path("verify/<str:phoneNo>", views.verify, name="verify"),
 ]

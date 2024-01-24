@@ -147,6 +147,13 @@ def profile(request):
     else:
         return render(request, 'account/profile.html', context)
 
+
+# Rendering signup page & And registering user.
+# Get token's from the settings.py
+account_sid = settings.ACCOUNT_SID
+auth_token = settings.AUTH_TOKEN
+verify_sid = settings.VERIFY_SID
+client = Client(account_sid, auth_token)
 # Rendering signup page & And registering user.
 def signUp(request): 
     if request.method == 'POST': 
@@ -156,6 +163,7 @@ def signUp(request):
         userType = request.POST.get('utype') 
         password1 = request.POST.get('pwd') 
         password2 = request.POST.get('pwdc') 
+        otp = request.POST.get('otp')
 
         if name and User.objects.filter(username=name).exists():
             return JsonResponse({'status':'userExist'})
@@ -163,25 +171,76 @@ def signUp(request):
         if email and User.objects.filter(email=email).exists():
             return JsonResponse({'status':'emailExist'})
 
-        if mobile and User.objects.filter(mobile=mobile):
-            return JsonResponse({'status':'mobileExist'})
+        # if mobile and User.objects.filter(mobile=mobile):
+        #     return JsonResponse({'status':'mobileExist'})
 
         if password1 == password2:
-            newUser = User.objects.create(username=name, email=email, mobile=mobile, user_type=userType)
-            newUser.set_password(password1)
-            newUser.save()
+            if otp:
+                # Check otp is still valid or not
+                # Get the otp creation time from the session
+                now = datetime.now()
+                otpGetTime = now.strftime("%H:%M:%S")
+                otpCreateTime = request.session.get("otpCreationTime")
 
-            if userType == "Customer":
-                return JsonResponse({'status':'createAccount'})
+                if(otpCreateTime):
+                    otp_create_time = datetime.strptime(otpCreateTime, "%H:%M:%S")
+                    otp_enter_time = datetime.strptime(otpGetTime, "%H:%M:%S")
+                    time_difference = otp_enter_time - otp_create_time
+                    seconds_difference = int(time_difference.total_seconds())
+
+                    mobile = request.session.get("mobile")
+
+                    if seconds_difference <= 120:
+                        verification_check = client.verify.services(verify_sid).verification_checks.create(
+                            to=f"+91{mobile}",
+                            code=otp
+                        )
+
+                        if verification_check.status == "approved": 
+                            newUser = User.objects.create(username=request.session.get("name"), email=request.session.get("email"), 
+                                                          mobile=request.session.get("mobile"), user_type=request.session.get("userType"))
+                            newUser.set_password(request.session.get("password1"))
+                            newUser.save()
+
+                            if request.session.get("userType") == "Customer":
+                                return JsonResponse({"status":"signup"})
+                            else:
+                                return redirect('/foodprovider/adminSignin/')
+                        else:
+                            return JsonResponse({"status":"invalidOTP"})
+                    else:
+                        return redirect('/signup/')
+            else:
+                # Store above informations in session
+                request.session["name"] = name
+                request.session["email"] = email
+                request.session["mobile"] = mobile
+                request.session["userType"] = userType
+                request.session["password1"] = password1
+                request.session["password2"] = password2
+
+                # Store otp creation time and store it in session
+                now = datetime.now() 
+                request.session["otpCreationTime"] = now.strftime("%H:%M:%S")
+
+                verification = client.verify.services(verify_sid).verifications.create(
+                    to=f"+91{mobile}",
+                    channel='sms'
+                ) 
+                return JsonResponse({"status":"openOTP"})
+
+            # if userType == "Customer":
+            #     return JsonResponse({'status':'createAccount'})
             
-            elif userType == "Foodprovider":
-                return JsonResponse({'status':'createAccount'})
+            # elif userType == "Foodprovider":
+            #     return JsonResponse({'status':'createAccount'})
 
         else:
             # Error handling for password mismatch
             return JsonResponse({'status':'passwordNotMatch'})
 
     return render(request, 'account/signup.html')
+
 
 # Rendering signin page & And authenticate user.
 def signIn(request):
@@ -211,73 +270,6 @@ def signIn(request):
             return JsonResponse({'status':'invalidUser'})
 
     return render(request, 'account/login.html')
-
-# Sent Number to verify
-def verifyNumber(request):
-    if request.method == "POST":
-        phone_no = request.POST.get('phone_no')
-        uname = request.session.get("username")
-        user = User.objects.get(username=uname)
-        user.mobile = phone_no
-        user.save()
-        return redirect(reverse('verify', kwargs={'phoneNo': phone_no}))
-    
-    return render(request, 'account/verifyNumber.html')
-
-
-# Get token's from the settings.py
-account_sid = settings.ACCOUNT_SID
-auth_token = settings.AUTH_TOKEN
-verify_sid = settings.VERIFY_SID
-
-client = Client(account_sid, auth_token) 
-
-# Verify Number
-def verify(request, phoneNo):
-    if request.method == "POST":
-        code = request.POST.get('code')
-
-        # Check otp is still valid or not
-        # Get the otp creation time from the session
-        now = datetime.now()
-        otpGetTime = now.strftime("%H:%M:%S")
-        otpCreateTime = request.session.get("otpCreationTime")
-
-        if(otpCreateTime):
-            otp_create_time = datetime.strptime(otpCreateTime, "%H:%M:%S")
-            otp_enter_time = datetime.strptime(otpGetTime, "%H:%M:%S")
-            time_difference = otp_enter_time - otp_create_time
-            seconds_difference = int(time_difference.total_seconds())
-
-            if seconds_difference < 40:
-                verification_check = client.verify.services(verify_sid).verification_checks.create(
-                    to=f"+91{phoneNo}",
-                    code=code
-                )
-
-                if verification_check.status == "approved": 
-                    user = authenticate( 
-                        request, 
-                        username=request.session.get('username'), 
-                        password=request.session.get('password') 
-                    ) 
-                    login(request, user)
-                    
-                    return redirect('index')
-                else:
-                    return redirect('/login/')
-            else:
-                return redirect('/login/') 
-
-    # Store otp creation time and store it in session
-    now = datetime.now() 
-    request.session["otpCreationTime"] = now.strftime("%H:%M:%S")
-    
-    verification = client.verify.services(verify_sid).verifications.create(
-        to=f"+91{phoneNo}",
-        channel='sms' 
-    )
-    return render(request, 'account/verify.html')
 
 
 # Rendering orders page & showing my order history

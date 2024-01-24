@@ -14,7 +14,7 @@ from pathlib import Path
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent 
 
 
 # Quick-start development settings - unsuitable for production
@@ -151,9 +151,5 @@ STORAGES = {
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
-STRIPE_PUBLISHABLE_KEY = "pk_test_51OUOtuSIH9yNr4T1g5FGjcAW7JFoBpKstjqSatww6gPqzXSAWhxU3LivKRbZXniQctRfJZHeTsIcWXiBbLZgauzt003N2eeS8x"
-STRIPE_SECRET_KEY = "sk_test_51OUOtuSIH9yNr4T1AnMap64qQIjxvxD8tMeJtUa14Solu8m5nYFe8ulhNVwfoApUo6vgUIYkmPTyu3Jqw62vBBT700ul71Rtcl"
 
 

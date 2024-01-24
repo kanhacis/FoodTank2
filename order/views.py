@@ -6,6 +6,9 @@ from user.models import Address
 import stripe
 from django.conf import settings
 import pyqrcode
+from django.http import HttpResponse
+from django.http import FileResponse
+from io import BytesIO
 
 
 # Place order
@@ -24,6 +27,7 @@ def placeOrder(request):
         house_no = request.POST.get('house_no', '')
         myData.append([payment, city, area, zipcode, house_no])
     
+   
     # Get the delivery address
     deliveryAdrs = Address.objects.get(user=request.user, city=myData[0][1].strip(), area=myData[0][2].strip(),
                                           zipcode=int(myData[0][3].strip()), house_no=int(myData[0][4].strip()))
@@ -87,11 +91,11 @@ def placeOrder(request):
             # bagItems.delete()
 
             # Generate the QR code for the payment url
-            url = pyqrcode.create(orderSession.url)
-            url.png('payQr.png', scale=4)
+            url = pyqrcode.create("{}".format(orderSession.url))
+            url.png('payQr.png', scale=4) 
 
-            # Send url to redirect to the payment page
             return JsonResponse({'redirect': orderSession.url})
+            
         else:
             # Create an order associated with the restaurant
             order = Order.objects.create(
