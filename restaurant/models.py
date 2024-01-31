@@ -41,3 +41,16 @@ class Todo(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     done = models.BooleanField(default=False)
     note = models.CharField(max_length=255, blank=True, null=True)
+
+    def __str__(self):
+        return self.note
+
+
+# Notification model
+class Notification(models.Model):
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, blank=True, null=True)
+    title = models.CharField(max_length=255)
+    time = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title

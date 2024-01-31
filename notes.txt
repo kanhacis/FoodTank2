@@ -131,3 +131,9 @@ def addToBag(request, id):
         bagFoodsName.append(i.item.name)
     
     return JsonResponse({'status': 'itemAdded', 'bagItemCount':bagItemCount, 'bagFoodsName':bagFoodsName})
+
+
+
+docker build --tag foodtank .
+
+docker run -it --name container1 -p 8000:8000 foodtank

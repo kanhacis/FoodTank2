@@ -17,4 +17,4 @@ urlpatterns = [
     path("deleteRestaurant/<int:id>", views.deleteRestaurant, name="deleteRestaurant"),
     path("restaurantOrder/<int:id>", views.restaurantOrder, name="restaurantOrder"),
     path("confirmOrder/<int:id>", views.confirmOrder, name="confirmOrder"),
-]
+] 

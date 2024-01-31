@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-        *{
+        * {
             margin: 1%;
             padding: 0;
             box-sizing: border-box;
@@ -35,34 +36,35 @@
             text-align: center;
         }
 
-        section .content .right table>thead>tr>th{
+        section .content .right table>thead>tr>th {
             border-bottom: 2px solid gray;
             padding: 10px;
             font-size: 18.72px;
         }
 
-        section .content .right table>tbody>tr>td{
+        section .content .right table>tbody>tr>td {
             padding: 10px;
         }
 
-        section .content .right table>tfoot>tr>td{
+        section .content .right table>tfoot>tr>td {
             padding: 10px;
         }
 
-        section .content .right table>tfoot>tr>td{
+        section .content .right table>tfoot>tr>td {
             font-size: 18.72px;
         }
-        
+
 
         table {
             border-collapse: collapse;
-            }
+        }
 
-            table tfoot {
-                border-top: 20px solid white;
+        table tfoot {
+            border-top: 20px solid white;
         }
     </style>
 </head>
+
 <body>
     <section>
         <div class="header">
@@ -116,7 +118,7 @@
                             <td>400</td>
                             <td>800</td>
                         </tr>
-                    </tbody> 
+                    </tbody>
                     <tfoot>
                         <tr style="border-bottom: 2px solid gray;">
                             <td style="width: 30%;">City Flavor Fee</td>
@@ -136,4 +138,47 @@
         </div>
     </section>
 </body>
+<!-- your_template.html -->
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    var isMouseActive = false;
+    var isKeyPressed = false;
+    var timeout = '';
+    // Event listener for mousemove
+    $(document).on('mousemove', function () {
+        isMouseActive = true;
+        clearTimeout(timeout);
+        // Reset the flag after 5 seconds
+        timeout = setTimeout(function () {
+            isMouseActive = false;
+            console.log(isMouseActive);
+        }, 5000);
+    });
+
+    // Event listener for keydown
+    $(document).on('keydown', function () {
+        isKeyPressed = true;
+        clearTimeout(timeout);
+
+        // Reset the flag after 5 seconds
+        timeout = (function () {
+            isKeyPressed = false;
+        }, 5000);
+    });
+
+    function checkForNewOrders() {
+        // Check if the mouse is active or a key is pressed
+        console.log("run");
+        if (!isMouseActive && !isKeyPressed) {
+            window.setTimeout(function () {
+                window.location.reload();
+            }, 1000);
+        }
+    }
+    // Periodically check for new orders (every 30 seconds in this example)
+    setInterval(checkForNewOrders, 1000);
+</script>
+
+
 </html>

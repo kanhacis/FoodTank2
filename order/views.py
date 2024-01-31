@@ -6,9 +6,7 @@ from user.models import Address
 import stripe
 from django.conf import settings
 import pyqrcode
-from django.http import HttpResponse
-from django.http import FileResponse
-from io import BytesIO
+from restaurant.models import Restaurant, Notification
 
 
 # Place order
@@ -71,24 +69,24 @@ def placeOrder(request):
             )
 
             # Create an order associated with the restaurant
-            # order = Order.objects.create(
-            #     user = request.user,
-            #     restaurant = restaurant,
-            #     total_bill = sum,
-            #     payment_method = myData[0][0].strip(),
-            #     deliveryAddress = deliveryAdrs
-            # )    
+            order = Order.objects.create(
+                user = request.user,
+                restaurant = restaurant,
+                total_bill = sum,
+                payment_method = myData[0][0].strip(),
+                deliveryAddress = deliveryAdrs
+            )    
 
             # Create order items linked to the created order
-            # for bag_item in bagItems:
-            #     OrderItem.objects.create(
-            #         order=order,
-            #         item=bag_item.item,
-            #         quantity=bag_item.quantity
-            #     ) 
+            for bag_item in bagItems:
+                OrderItem.objects.create(
+                    order=order,
+                    item=bag_item.item,
+                    quantity=bag_item.quantity
+                ) 
 
             # Clear the user's bag after placing the order
-            # bagItems.delete()
+            bagItems.delete()
 
             # Generate the QR code for the payment url
             url = pyqrcode.create("{}".format(orderSession.url))
@@ -116,6 +114,12 @@ def placeOrder(request):
 
             # Clear the user's bag after placing the order
             bagItems.delete()
+
+            # Send notification
+            restaurantId = restaurant.id
+            restaurant = Restaurant.objects.get(id=restaurantId)
+            Notification.objects.create(restaurant=restaurant, title="New order received!")
+            Notification.save()
 
             # Send success response
             return JsonResponse({"status": "success"})

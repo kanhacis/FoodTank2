@@ -1,15 +1,11 @@
 from django.shortcuts import render, redirect
 from menu.models import Menu
 from .models import Bag, BagItem
-from user.models import User, Address
+from user.models import Address
 from django.http import JsonResponse, HttpResponse
-from django.template.loader import get_template 
-from django.template import Context
-import pdfkit
 import os
-from weasyprint import HTML, CSS
-from django.http import FileResponse
-from django.utils.encoding import smart_str
+from weasyprint import HTML
+from django.template.loader import get_template
 
 
 # Rendering add to bag page & write logic to add food in my bag.
@@ -98,30 +94,23 @@ def viewBag(request):
         'address2': Address.objects.get(user=request.user)
     } 
 
+    # Example 1
     if request.method == "POST":
         html_content = render(request, "bag/inVoice.html", context).content
-        custom_css = """
-        @page {
-            size: A4;
-        }
-        """
         
         # Generate PDF from HTML content
         pdf_output = 'inVoice.pdf'
-        HTML(string=html_content.decode('utf-8')).write_pdf(pdf_output, stylesheets=[CSS(string=custom_css)])
+        HTML(string=html_content.decode('utf-8')).write_pdf(pdf_output)
 
         # Open inVoice.pdf 
         with open(pdf_output, 'rb') as pdf_file:
             pdf_content = pdf_file.read()
 
-        # Create an HttpResponse to send the file content
-        response = HttpResponse(pdf_content, content_type='application/pdf')
-        
-        response['Content-Disposition'] = f'attachment; filename="{smart_str(pdf_output)}"'
-
-        os.remove(pdf_output)
-        
-        return response
+        # Create an HttpResponse to send the file content 
+        response = HttpResponse(pdf_content, content_type='application/pdf') 
+        response['Content-Disposition'] = f'attachment; filename="{pdf_output}"' 
+        os.remove(pdf_output) 
+        return response         
     
     return render(request, "bag/basket.html", context)
 

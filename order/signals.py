@@ -19,8 +19,8 @@ def notification():
     notification.send() 
 
 
-@receiver(post_save, sender=OrderItem) 
-def create_profile(sender, instance, created, **kwargs):
-    if created:
-        # Call function
-        notification() 
+# @receiver(post_save, sender=OrderItem) 
+# def create_profile(sender, instance, created, **kwargs):
+#     if created:
+#         # Call function
+#         notification() 

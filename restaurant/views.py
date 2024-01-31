@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Restaurant, Todo
+from .models import Restaurant, Todo, Notification
 from django.contrib import messages
 from user.models import User, Address
 from menu.models import Menu
@@ -42,7 +42,7 @@ def adminDashboard(request):
 
     # Get all orders from the current user restaurant
     userRestaurant = Restaurant.objects.filter(user=request.user)
-    myOrders = Order.objects.filter(restaurant__in=userRestaurant)
+    myOrders = Order.objects.filter(restaurant__in=userRestaurant).order_by('-order_id')
 
     # Calculating total amount
     totalOrder = 0
@@ -144,10 +144,10 @@ def addRestaurant(request):
 
         user_obj = User.objects.get(username=uname)
 
-        # restaurant = Restaurant.objects.create(user=user_obj, name=rname, city=rcity, 
-        #                         address=raddress, mobile=rmobile, veg_or_nonveg=rtype, no_of_chefs=nchefs,
-        #                         start_date=rdate, img1=rimg1, img2=rimg2, img3=rimg3, img4=rimg4, desc=desc)
-        # restaurant.save()
+        restaurant = Restaurant.objects.create(user=user_obj, name=rname, city=rcity, 
+                                address=raddress, mobile=rmobile, veg_or_nonveg=rtype, no_of_chefs=nchefs,
+                                start_date=rdate, img1=rimg1, img2=rimg2, img3=rimg3, img4=rimg4, desc=desc)
+        restaurant.save()
         return JsonResponse({"status":"restaurantAdded"})
         
 
@@ -229,9 +229,9 @@ def restaurantOrder(request, id):
  
 # Confirm order 
 def confirmOrder(request, id): 
-    order = Order.objects.get(order_id=id) 
+    order = Order.objects.get(order_id=id)
     order.is_confirmed = True 
-    # order.save() 
+    order.save() 
 
     dataList = [order.order_id, order.order_date, order.user.username, order.total_bill, order.is_confirmed]
     return JsonResponse({"status":"success", "dataList":dataList})
@@ -282,4 +282,3 @@ def restaurantInfo(request, id):
     }
 
     return render(request, 'foodprovider/restaurant_info.html', context)
- 

@@ -1,6 +1,34 @@
 {% extends '../base2.html' %}
 {% block content %}
 {% load static %}
+<style>
+.hideScroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none; 
+  overflow-y: scroll; 
+}
+
+.hideScroll::-webkit-scrollbar {
+  display: none; 
+}
+
+.hideScroll1 {
+  height: 235px;  
+  width: 100%;
+  overflow: auto;
+}
+
+.hideScroll2{
+    height: 235px;
+    overflow: auto;
+}
+
+.hideScroll3{
+    height: 200px;
+    overflow: auto;
+}
+</style>
+
 <div class="container-fluid position-relative d-flex p-0">
     <!-- Spinner Start -->
     <div id="spinner"
@@ -11,11 +39,9 @@
     </div>
     <!-- Spinner End -->
 
-
     <!-- Sidebar Start -->
     {% include './sidebar.html' %}
     <!-- Sidebar End -->
-
 
     <!-- Content Start -->
     <div class="content">
@@ -94,14 +120,14 @@
 
         <!-- Recent Sales Start -->
         <div class="container-fluid pt-4 px-4">
-            <div class="bg-secondary text-center rounded p-4" style="height: 320px; overflow: auto;">
+            <div class="bg-secondary text-center rounded p-4">
                 <div class="d-flex align-items-center justify-content-between mb-4">
                     <h6 class="mb-0">Order history</h6>
                     <form class="d-none d-md-flex ms-4">
                         <input class="form-control bg-dark border-0" type="search" placeholder="Search">
                     </form>
                 </div>
-                <div class="table-responsive">
+                <div class="table-responsive hideScroll hideScroll1">
                     <table id="addData" class="table text-start align-middle table-bordered table-hover mb-0">
                         <thead>
                             <tr class="text-white">
@@ -142,7 +168,7 @@
         <div class="container-fluid pt-4 px-4">
             <div class="row g-4">
                 <!-- Confirm order start -->
-                <div class="col-sm-12 col-md-6 col-xl-4" style="height: 320px; overflow: auto;">
+                <div class="col-sm-12 col-md-6 col-xl-4">
                     <div class="h-100 rounded p-4 bg-secondary">
                         <div class="d-flex align-items-center justify-content-between mb-2">
                             <h6 class="mb-0">Confirm orders</h6>
@@ -150,7 +176,7 @@
                         </div>
 
                         <div class="d-flex align-items-center py-3 bg-secondary">
-                            <div class="w-100">
+                            <div class="w-100 hideScroll hideScroll2">
                                 <table class="table text-start align-middle table-bordered table-hover mb-0">
                                     <thead>
                                         <tr class="text-white">
@@ -193,7 +219,7 @@
                 <!-- Calender end -->
 
                 <!-- Todo list start -->
-                <div class="col-sm-12 col-md-6 col-xl-4" style="height: 320px; overflow: auto;">
+                <div class="col-sm-12 col-md-6 col-xl-4">
                     <div class="h-100 p-4 rounded bg-secondary">
                         <div class="d-flex align-items-center justify-content-between mb-4">
                             <h6 class="mb-0">Today's task</h6>
@@ -206,8 +232,8 @@
                                 <input type="submit" class="btn btn-primary ms-2" id="addTask" value="Add">
                             </div>
                         </form>
-                        
-                        <section id="todoData">
+                         
+                        <section id="todoData" class="hideScroll hideScroll3">
                             {% for data in myTask %}
                             <div class="d-flex align-items-center pt-2" id="removeDiv">
                                 <input class="form-check-input m-0" type="checkbox">
@@ -386,4 +412,41 @@
      })
 </script>
 <!-- Implement ajax with todo list end -->
+
+<!-- Reload page in every 30 seconds start -->
+<script>
+    var isMouseActive = false;
+    var isKeyPressed = false;
+    var timeout = '';
+    // Event listener for mousemove
+    $(document).on('mousemove', function () {
+        isMouseActive = true;
+        clearTimeout(timeout);
+        // Reset the flag after 5 seconds
+        timeout = setTimeout(function () {
+            isMouseActive = false;
+            console.log(isMouseActive);
+        }, 5000);
+    });
+
+    // Event listener for keydown
+    $(document).on('keydown', function () {
+        isKeyPressed = true;
+        clearTimeout(timeout);
+
+        // Reset the flag after 5 seconds
+        timeout = (function () {
+            isKeyPressed = false;
+        }, 5000);
+    });
+
+    function checkForNewOrders() {
+        // Check if the mouse is active or a key is pressed
+        if (!isMouseActive && !isKeyPressed) {
+            window.location.reload();
+        }
+    }
+    setInterval(checkForNewOrders, 30000);
+</script>
+<!-- Reload page in every 30 seconds end -->
 {% endblock content %}

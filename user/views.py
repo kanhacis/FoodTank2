@@ -11,6 +11,7 @@ from django.urls import reverse
 from twilio.rest import Client
 from django.conf import settings
 from datetime import datetime
+import numpy as np
 
 
 # Rendering home page with all food items.
@@ -82,10 +83,12 @@ def home(request):
 # Rendering profile page.
 def profile(request):
     if not request.user.is_authenticated:
-        return redirect("/login/") 
+        return redirect("/login/")
 
     user = request.user
     pri =  request.POST.get('primary') 
+
+    arr = {"number":np.array([1,2,3])}
 
     try:
         address = Address.objects.get(user=user, primary=pri)
@@ -134,7 +137,8 @@ def profile(request):
     userAddress, created = Address.objects.get_or_create(user=request.user, primary=True)
     context = {
         'user_profile' : user,
-        'user_address' : userAddress
+        'user_address' : userAddress,
+        'arr' : arr
     }
 
     if request.user.user_type == "Customer":
@@ -142,8 +146,7 @@ def profile(request):
     
     elif request.user.user_type == "Foodprovider":
         context['resturant_data'] = Restaurant.objects.filter(user=request.user)
-        return render(request, 'restaurant_admin/profile.html', context)
-    
+        return render(request, 'restaurant_admin/profile.html', context)    
     else:
         return render(request, 'account/profile.html', context)
 
