@@ -57,7 +57,7 @@
                         <i class="fa fa-chart-line fa-3x text-primary"></i>
                         <div class="ms-3">
                             <p class="mb-2">Today Orders</p>
-                            <h6 class="mb-0">{{todayOrder}}</h6>
+                            <h6 class="mb-0" id="todayOrder">{{todayOrder}}</h6>
                         </div>
                     </div>
                 </div>
@@ -222,11 +222,11 @@
                 <div class="col-sm-12 col-md-6 col-xl-4">
                     <div class="h-100 p-4 rounded bg-secondary">
                         <div class="d-flex align-items-center justify-content-between mb-4">
-                            <h6 class="mb-0">Today's task</h6>
-                            <a href="">Show All</a>
-                        </div>
-                        <form action="#" method="POST">
-                            {% csrf_token %}
+                            <h6 class="mb-0">Today's task</h6> 
+                            <a href="">Show All</a> 
+                        </div> 
+                        <form action="#" method="POST"> 
+                            {% csrf_token %} 
                             <div class="d-flex mb-2">
                                 <input class="form-control bg-dark border-0" type="text" name="note" id="note" placeholder="Enter task">
                                 <input type="submit" class="btn btn-primary ms-2" id="addTask" value="Add">
@@ -305,7 +305,6 @@
             data: myData,
             success:function(data){
                 const x = data.dataList;
-                console.log(`${x[4]}`);
                 let result = `
                             <tr>
                                 <td>${x[0]}</td>
@@ -325,6 +324,10 @@
                 // Get totalOrder and update it
                 let totalOrder = $("#totalOrder").text();
                 $("#totalOrder").text(Number(totalOrder) + 1);
+
+                // Get todayOrder and update it
+                let todayOrder = $("#todayOrder").text();
+                $("#todayOrder").text(Number(todayOrder) + 1)
 
                 // Get totalSales and update it
                 let totalSale = $("#totalAmount").text().substring(1);
@@ -352,7 +355,6 @@
             
             // Get the id
             id = $(this).attr("task-id");
-            console.log(id);
             let myData = {id:id};
 
             // Remove that task
@@ -407,9 +409,9 @@
                     }
                 }
             })
-            }
-          })
-     })
+          }
+        })
+    })
 </script>
 <!-- Implement ajax with todo list end -->
 
@@ -425,7 +427,6 @@
         // Reset the flag after 5 seconds
         timeout = setTimeout(function () {
             isMouseActive = false;
-            console.log(isMouseActive);
         }, 5000);
     });
 

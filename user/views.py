@@ -11,7 +11,6 @@ from django.urls import reverse
 from twilio.rest import Client
 from django.conf import settings
 from datetime import datetime
-import numpy as np
 
 
 # Rendering home page with all food items.
@@ -88,8 +87,6 @@ def profile(request):
     user = request.user
     pri =  request.POST.get('primary') 
 
-    arr = {"number":np.array([1,2,3])}
-
     try:
         address = Address.objects.get(user=user, primary=pri)
     except Address.DoesNotExist:
@@ -138,7 +135,6 @@ def profile(request):
     context = {
         'user_profile' : user,
         'user_address' : userAddress,
-        'arr' : arr
     }
 
     if request.user.user_type == "Customer":

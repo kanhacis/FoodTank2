@@ -14,11 +14,9 @@ from django.db.models import Avg
 def adminSignup(request):
     return render(request, 'restaurant_admin/signup.html')
 
-
 # Rendering admin signin page.
 def adminSignin(request):
     return render(request, 'restaurant_admin/signin.html')
-
 
 # Rendering admin dashboard
 def adminDashboard(request):
@@ -119,7 +117,6 @@ def restaurant(request):
     }
     return render(request, 'foodprovider/restaurant.html', context)
 
-
 # Rendering add restaurant page & write logic to create new restaurant.
 def addRestaurant(request):
     # Check if the user is authenticated, if not, redirect them to the login page
@@ -153,7 +150,6 @@ def addRestaurant(request):
 
     # return render(request, 'foodprovider/add_restaurant.html')
     return render(request, 'restaurant_admin/addRestaurant.html')
-
 
 # Rendering edit restaurant page & write logic to edit an existing restaurant.
 def editRestaurant(request, id):
@@ -201,7 +197,6 @@ def editRestaurant(request, id):
     # return render(request, 'foodprovider/edit_restaurant.html', context)
     return render(request, 'restaurant_admin/editRestaurant.html', context)
 
-
 # Write logic to delete an existing restaurant.
 def deleteRestaurant(request, id):
     # Check if the user is authenticated, if not, redirect them to the login page
@@ -211,7 +206,6 @@ def deleteRestaurant(request, id):
     restaurant = Restaurant.objects.get(id=id) 
     restaurant.delete() 
     return redirect('/profile/') 
-
 
 # Restaurant orders details
 def restaurantOrder(request, id):
@@ -226,12 +220,11 @@ def restaurantOrder(request, id):
     }
     return render(request, "restaurant_admin/restaurantOrder.html", context)
  
- 
 # Confirm order 
 def confirmOrder(request, id): 
     order = Order.objects.get(order_id=id)
     order.is_confirmed = True 
-    order.save() 
+    # order.save() 
 
     dataList = [order.order_id, order.order_date, order.user.username, order.total_bill, order.is_confirmed]
     return JsonResponse({"status":"success", "dataList":dataList})

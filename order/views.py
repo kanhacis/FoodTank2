@@ -112,16 +112,17 @@ def placeOrder(request):
                     quantity=bag_item.quantity
                 ) 
 
-            # Clear the user's bag after placing the order
-            bagItems.delete()
+            # Clear the user's bag after placing the order 
+            bagItems.delete() 
 
-            # Send notification
-            restaurantId = restaurant.id
-            restaurant = Restaurant.objects.get(id=restaurantId)
-            Notification.objects.create(restaurant=restaurant, title="New order received!")
-            Notification.save()
-
-            # Send success response
-            return JsonResponse({"status": "success"})
-
+            # Send notification 
+            # restaurantId = restaurant.id 
+            # restaurant = Restaurant.objects.get(id=restaurantId) 
+            # user = request.user 
+            # Notification.objects.create(restaurant=restaurant, user=user, title="New order received!") 
+            # Notification.save() 
+    
+            # Send success response 
+            return JsonResponse({"status": "success"}) 
+    
     return redirect('/bag/view_bag/')

@@ -1,11 +1,12 @@
-FROM python
+# Docker to use the official Python image
+FROM python 
+
+ENV PYTHONUNBUFFERED 1
 
 WORKDIR /app
 
-COPY requirement.txt requirement.txt
+COPY requirements.txt /app/
 
-RUN pip install -r requirement.txt
+RUN pip install -r requirements.txt
 
-COPY . .
-
-CMD [ "python", "manage.py", "runserver", "0.0.0.0:8000" ]
+COPY . /app/ 
